@@ -72,15 +72,15 @@ Write By R
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/10/18/homework 4/" title="Homework 4" itemprop="url">Homework 4</a>
+      <a href="/2014/10/18/homework4/" title="Homework 4" itemprop="url">Homework 4</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="WackyYoung">WackyYoung</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-10-18T09:15:59.000Z" itemprop="datePublished">2014-10-18</time>
-    更新日期:<time datetime="2014-10-18T10:30:45.000Z" itemprop="dateModified">2014-10-18</time>
+    <time datetime="2014-10-18T10:25:33.000Z" itemprop="datePublished">2014-10-18</time>
+    更新日期:<time datetime="2014-10-18T10:24:40.000Z" itemprop="dateModified">2014-10-18</time>
     
   </p>
 </header>
@@ -181,7 +181,7 @@ Write By R
 </li>
 </ol>
 </blockquote>
-<figure class="highlight {r}"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## 素数函数</span></div><div class="line">prime = <span class="function"><span class="keyword">function</span>(<span class="title">n</span>)</span></div><div class="line">{</div><div class="line">    n = <span class="keyword">as</span>.<span class="keyword">integer</span>(n)</div><div class="line">    <span class="keyword">if</span>(n &gt; <span class="number">10e8</span>) stop(<span class="string">"n too large"</span>)</div><div class="line">    primes = rep(<span class="constant">TRUE</span>, n)</div><div class="line">    primes[<span class="number">1</span>] = <span class="constant">FALSE</span></div><div class="line">    <span class="keyword">last</span>.prime = <span class="number">2</span>L</div><div class="line">    fsqr = floor(<span class="built_in">sqrt</span>(n))</div><div class="line">    <span class="keyword">while</span> (<span class="keyword">last</span>.prime &lt;= fsqr)</div><div class="line">    {</div><div class="line">        primes[seq.int(<span class="number">2</span>L*<span class="keyword">last</span>.prime, n, <span class="keyword">last</span>.prime)] = <span class="constant">FALSE</span></div><div class="line">        sel = which(primes[(<span class="keyword">last</span>.prime+<span class="number">1</span>):(fsqr+<span class="number">1</span>)])</div><div class="line">        <span class="keyword">if</span>(<span class="keyword">any</span>(sel)){</div><div class="line">            <span class="keyword">last</span>.prime = <span class="keyword">last</span>.prime + <span class="built_in">min</span>(sel)</div><div class="line">        }<span class="keyword">else</span> <span class="keyword">last</span>.prime = fsqr+<span class="number">1</span></div><div class="line">    }</div><div class="line">    which(primes)</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">## Test</span></div><div class="line">prime(<span class="number">100</span>)</div><div class="line"><span class="built_in">max</span>(prime(<span class="number">100</span>))</div><div class="line"><span class="built_in">length</span>(prime(<span class="number">100</span>))</div></pre></td></tr></table></figure>
+<figure class="highlight {r}"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">prime = <span class="function"><span class="keyword">function</span>(<span class="title">n</span>)</span></div><div class="line">{</div><div class="line">    n = <span class="keyword">as</span>.<span class="keyword">integer</span>(n)</div><div class="line">    <span class="keyword">if</span>(n &gt; <span class="number">10e8</span>) stop(<span class="string">"n too large"</span>)</div><div class="line">    primes = rep(<span class="constant">TRUE</span>, n)</div><div class="line">    primes[<span class="number">1</span>] = <span class="constant">FALSE</span></div><div class="line">    <span class="keyword">last</span>.prime = <span class="number">2</span>L</div><div class="line">    fsqr = floor(<span class="built_in">sqrt</span>(n))</div><div class="line">    <span class="keyword">while</span> (<span class="keyword">last</span>.prime &lt;= fsqr)</div><div class="line">    {</div><div class="line">        primes[seq.int(<span class="number">2</span>L*<span class="keyword">last</span>.prime, n, <span class="keyword">last</span>.prime)] = <span class="constant">FALSE</span></div><div class="line">        sel = which(primes[(<span class="keyword">last</span>.prime+<span class="number">1</span>):(fsqr+<span class="number">1</span>)])</div><div class="line">        <span class="keyword">if</span>(<span class="keyword">any</span>(sel)){</div><div class="line">            <span class="keyword">last</span>.prime = <span class="keyword">last</span>.prime + <span class="built_in">min</span>(sel)</div><div class="line">        }<span class="keyword">else</span> <span class="keyword">last</span>.prime = fsqr+<span class="number">1</span></div><div class="line">    }</div><div class="line">    which(primes)</div><div class="line">}</div><div class="line"></div><div class="line">prime(<span class="number">100</span>)</div><div class="line"><span class="built_in">max</span>(prime(<span class="number">100</span>))</div><div class="line"><span class="built_in">length</span>(prime(<span class="number">100</span>))</div></pre></td></tr></table></figure>
 
   
 	</div>
@@ -192,7 +192,7 @@ Write By R
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/10/18/homework 4/" data-title="Homework 4 | WackyYang`s Blog" data-tsina="2255106785" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/10/18/homework4/" data-title="Homework 4 | WackyYang`s Blog" data-tsina="2255106785" class="share clearfix">
   </div>
 
 </div>
@@ -201,19 +201,11 @@ Write By R
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/10/18/homework 4/" title="Homework 4">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Homework 4</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/10/17/hello-world/"  title="Hello World">
+<a href="/2014/10/18/homework4_solve/"  title="Homework 4">
  <strong>NEXT:</strong><br/> 
- <span>Hello World
+ <span>Homework 4
 </span>
 </a>
 </div>
