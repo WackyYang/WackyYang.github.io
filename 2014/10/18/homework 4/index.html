@@ -1,0 +1,400 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Homework 4 | WackyYang`s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="WackyYoung">
+    
+    <meta name="description" content="Date:2014-10-18 17:11:26
+Write By R
+ 
+1. 用 R 语言写一个冒泡排序函数（从后往前） , 要求完整代码并举例实现 .冒泡排序原理：
+
+比较相邻的元素。如果第一个比第二个大，就交换他们两个。
+对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。在这一点，">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="WackyYang`s Blog" title="WackyYang`s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="WackyYang`s Blog">WackyYang`s Blog</a></h1>
+				<h2 class="blog-motto">如果我不曾见过太阳，我本可以忍受黑暗</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">存档</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/10/18/homework 4/" title="Homework 4" itemprop="url">Homework 4</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="WackyYoung">WackyYoung</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-10-18T09:15:59.000Z" itemprop="datePublished">2014-10-18</time>
+    更新日期:<time datetime="2014-10-18T09:43:36.000Z" itemprop="dateModified">2014-10-18</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#_"><span class="toc-number">1.</span> <span class="toc-text"> </span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-_用_R_语言写一个冒泡排序函数（从后往前）_,_要求完整代码并举例实现_-冒泡排序原理："><span class="toc-number">1.1.</span> <span class="toc-text">1. 用 R 语言写一个冒泡排序函数（从后往前） , 要求完整代码并举例实现 .冒泡排序原理：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-_写一个函数，对一个矩阵进行归一化处理_:_例如输入矩阵_a,_进行归一化处理后的结果是_(_注意：归一化处理后，矩阵里的元素全部都在_[0_，_1]_之间_)_："><span class="toc-number">1.2.</span> <span class="toc-text">2. 写一个函数，对一个矩阵进行归一化处理 : 例如输入矩阵 a, 进行归一化处理后的结果是 ( 注意：归一化处理后，矩阵里的元素全部都在 [0 ， 1] 之间 ) ：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-_写一个函数，用递归实现_1_到任意正整数之间的数字的和"><span class="toc-number">1.3.</span> <span class="toc-text">3. 写一个函数，用递归实现 1 到任意正整数之间的数字的和</span></a></li></ol></li></ol>
+		</div>
+		
+		<p><strong>Date:2014-10-18 17:11:26</strong></p>
+<p><strong>Write By R</strong></p>
+<h3 id="_"> </h3>
+<h4 id="1-_用_R_语言写一个冒泡排序函数（从后往前）_,_要求完整代码并举例实现_-冒泡排序原理：">1. 用 R 语言写一个冒泡排序函数（从后往前） , 要求完整代码并举例实现 .冒泡排序原理：</h4>
+<ul>
+<li>比较相邻的元素。如果第一个比第二个大，就交换他们两个。</li>
+<li>对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。在这一点，最后的元素应该会是最大的数。</li>
+<li>针对所有的元素重复以上的步骤，除了最后一个。</li>
+<li>持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。</li>
+</ul>
+<blockquote>
+<p><strong>举例：</strong></p>
+<p><strong>原始序列：  70 30 40 10 80 20 90 100 75 60 45</strong></p>
+<p>第一趟排序后： 30 40 10 70 20 80 90 75 60 45 100<br>内部过程：<br>首先选中 70，由于70大于30，40，10，但小于80，所以70来到了10的位置。<br>接着选中 80，由于 80 大于 20，小于 90 ，所以 80 来到 20 的位置上。<br>接着选中 90，由于 90 小于 100，所以位置没变，接着选中 100 ，由于 100 最大，所以依次交换，来到了最后的位置上。</p>
+<p>第二趟排序后： 30 10 40 20 70 80 75 60 45 90<br>内部过程：首先选中 30 ， 30 小于 40 ，所以 30 的位置没有改变。<br>接着选中 40 ，并和 10 交换。接着选中 70 ，由于 70&lt;80 ，<br>接着选中 80 ， 80&lt;90, 因此 90 来到了倒数第二的位置上。</p>
+<p>第三趟排序后： 10 30 20 40 70 75 60 45 80<br>内部过程：首先选中30，并与 10 交换。<br>接着选中40，并与20交换。<br>接着选中 70，70&lt;80，未发生交换。选中80，由于80大于后面几个数，因此 80 来到了倒数第三的位置上。</p>
+<p>第四趟排序后： 10 20 30 40 70 60 45 75<br>内部过程：首先选中 10 ，未发生交换。<br>接着选中30，与20交换。接着选中75，由于75大于后面的数，因此75来到了倒数第四的位置上。</p>
+<p>第五趟排序后： 10 20 30 40 60 45 70<br>内部过程：本次 70 首先与 60 交换，然后与 45 交换，最终来到了倒数第五的位置上。</p>
+<p>第六趟排序后： 10 20 30 40 45 60<br>内部过程：本次 60 与 45 交换，来到倒数第六的位置上。</p>
+<p>第七趟排序后： 10 20 30 40 45</p>
+</blockquote>
+<p><strong>code （从前往后作为参考）：</strong></p>
+<pre><code>    maopao&lt;-<span class="function"><span class="keyword">function</span>(<span class="title">data</span>){</span>
+        <span class="built_in">len</span> &lt;- <span class="built_in">length</span>(data)
+        <span class="keyword">for</span>(i <span class="operator">in</span> <span class="number">1</span>:(<span class="built_in">len</span>-<span class="number">1</span>)){
+            j&lt;-<span class="number">1</span>
+            <span class="keyword">while</span>(j &lt;= <span class="built_in">len</span>-i){
+                <span class="keyword">if</span>(data[j]&gt;data[j+<span class="number">1</span>]){
+                    <span class="keyword">middle</span> &lt;- data[j]
+                    data[j]&lt;- data[j+<span class="number">1</span>]
+                    data[j+<span class="number">1</span>]&lt;- <span class="keyword">middle</span>
+                }
+            j&lt;-j+<span class="number">1</span>
+            }
+        }
+        <span class="constant">return</span>(data)    
+    }
+</code></pre><h4 id="2-_写一个函数，对一个矩阵进行归一化处理_:_例如输入矩阵_a,_进行归一化处理后的结果是_(_注意：归一化处理后，矩阵里的元素全部都在_[0_，_1]_之间_)_：">2. 写一个函数，对一个矩阵进行归一化处理 : 例如输入矩阵 a, 进行归一化处理后的结果是 ( 注意：归一化处理后，矩阵里的元素全部都在 [0 ， 1] 之间 ) ：</h4>
+<pre><code><span class="input"><span class="prompt">&gt; df
+&gt;</span> <span class="constant">X4</span>.<span class="number">9</span>  <span class="constant">X3</span> <span class="constant">X1</span>.<span class="number">4</span> <span class="constant">X0</span>.<span class="number">2</span></span>
+<span class="input"><span class="prompt">&gt; 1   4.7 3.2  1.3  0.2
+&gt;</span> <span class="number">2</span>   <span class="number">4.6</span> <span class="number">3.1</span>  <span class="number">1.5</span>  <span class="number">0</span>.<span class="number">2</span></span>
+<span class="input"><span class="prompt">&gt; 3   5.0 3.6  1.4  0.2
+&gt;</span> <span class="number">4</span>   <span class="number">5.4</span> <span class="number">3.9</span>  <span class="number">1.7</span>  <span class="number">0</span>.<span class="number">4</span></span>
+<span class="input"><span class="prompt">&gt; 5   4.6 3.4  1.4  0.3
+&gt;</span> <span class="number">6</span>   <span class="number">5.0</span> <span class="number">3.4</span>  <span class="number">1.5</span>  <span class="number">0</span>.<span class="number">2</span></span>
+<span class="input"><span class="prompt">&gt; 7   4.4 2.9  1.4  0.2
+&gt;</span> <span class="number">8</span>   <span class="number">4.9</span> <span class="number">3.1</span>  <span class="number">1.5</span>  <span class="number">0</span>.<span class="number">1</span></span>
+<span class="input"><span class="prompt">&gt; 9   5.4 3.7  1.5  0.2
+&gt;</span> <span class="number">10</span>  <span class="number">4.8</span> <span class="number">3.7</span>  <span class="number">1.6</span>  <span class="number">0</span>.<span class="number">2</span></span>
+<span class="input"><span class="prompt">&gt; 11  4.8 3.0  1.4  0.1
+&gt;</span> <span class="number">12</span>  <span class="number">4.3</span> <span class="number">3.0</span>  <span class="number">1.1</span>  <span class="number">0</span>.<span class="number">1</span></span>
+<span class="input"><span class="prompt">&gt; 13  5.8 4.0  1.2  0.2
+&gt;</span> <span class="number">14</span>  <span class="number">5.7</span> <span class="number">4.4</span>  <span class="number">1.5</span>  <span class="number">0</span>.<span class="number">4</span></span>
+<span class="input"><span class="prompt">
+&gt;</span> autonorm(df)</span>
+<span class="input"><span class="prompt">&gt;  X4.9 X3  X1.4   X0.2
+&gt;</span> <span class="number">1</span>  <span class="number">0</span>.<span class="number">14814815</span> <span class="number">0</span>.<span class="number">50000000</span> <span class="number">0</span>.<span class="number">075</span> <span class="number">0</span>.<span class="number">05</span>882353</span>
+<span class="input"><span class="prompt">&gt; 2  0.11111111 0.45833333 0.125 0.05882353
+&gt;</span> <span class="number">3</span>  <span class="number">0</span>.<span class="number">25925926</span> <span class="number">0</span>.<span class="number">66666667</span> <span class="number">0</span>.<span class="number">100</span> <span class="number">0</span>.<span class="number">05</span>882353</span>
+<span class="input"><span class="prompt">&gt; 4  0.40740741 0.79166667 0.175 0.17647059
+&gt;</span> <span class="number">5</span>  <span class="number">0</span>.<span class="number">11111111</span> <span class="number">0</span>.<span class="number">58333333</span> <span class="number">0</span>.<span class="number">100</span> <span class="number">0</span>.<span class="number">11764706</span></span>
+<span class="input"><span class="prompt">&gt; 6  0.25925926 0.58333333 0.125 0.05882353
+&gt;</span> <span class="number">7</span>  <span class="number">0</span>.<span class="number">03703704</span> <span class="number">0</span>.<span class="number">37500000</span> <span class="number">0</span>.<span class="number">100</span> <span class="number">0</span>.<span class="number">05</span>882353</span>
+<span class="input"><span class="prompt">&gt; 8  0.22222222 0.45833333 0.125 0.00000000
+&gt;</span> <span class="number">9</span>  <span class="number">0</span>.<span class="number">40740741</span> <span class="number">0</span>.<span class="number">70833333</span> <span class="number">0</span>.<span class="number">125</span> <span class="number">0</span>.<span class="number">05</span>882353</span>
+<span class="input"><span class="prompt">&gt; 10 0.18518519 0.70833333 0.150 0.05882353
+&gt;</span> <span class="number">11</span> <span class="number">0</span>.<span class="number">18518519</span> <span class="number">0</span>.<span class="number">41666667</span> <span class="number">0</span>.<span class="number">100</span> <span class="number">0</span>.<span class="number">00000000</span></span>
+<span class="input"><span class="prompt">&gt; 12 0.00000000 0.41666667 0.025 0.00000000
+&gt;</span> <span class="number">13</span> <span class="number">0</span>.<span class="number">55555556</span> <span class="number">0</span>.<span class="number">83333333</span> <span class="number">0</span>.<span class="number">050</span> <span class="number">0</span>.<span class="number">05</span>882353</span>
+&gt; <span class="number">14</span> <span class="number">0</span>.<span class="number">51851852</span> <span class="number">1.00000000</span> <span class="number">0</span>.<span class="number">125</span> <span class="number">0</span>.<span class="number">17647059</span>
+</code></pre><p>思路 :<br>（ 1 ）求出矩阵每一列的最大值 , 最小值 , 并计算差值</p>
+<p>（ 2 ）对矩阵的每一个元素减去所在列的最小值得到的结果再除以所在列的最大值与最小值差值</p>
+<p>参考公式：</p>
+<h4 id="3-_写一个函数，用递归实现_1_到任意正整数之间的数字的和">3. 写一个函数，用递归实现 1 到任意正整数之间的数字的和</h4>
+<blockquote>
+<p>例如输入 100 ，得到 1 到 100 的和为 5050.</p>
+<p>递归的概念：一个过程 ( 或函数 ) 直接或间接调用自己本身 , 这种过程 ( 或函数 ) 叫递归过程 ( 或函数 ).</p>
+<p>递归算法：递归算法流程递归过程一般通过函数或子过程来实现。</p>
+<p>递归方法：在函数或子过程的内部，直接或者间接地调用自己的算法。</p>
+<p>如何设计递归算法：</p>
+<ol>
+<li><p>确定递归公式</p>
+</li>
+<li><p>确定边界 ( 终了 ) 条件</p>
+</li>
+<li><p>写一个函数，输入为 x ，输出为小于等于 x 的素数数目以及最大素数，例如， x=5 ，输出 “ 小于等于 5 的素数有 3 个，最大的为 5 。</p>
+</li>
+</ol>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/10/18/homework 4/" data-title="Homework 4 | WackyYang`s Blog" data-tsina="2255106785" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/10/17/hello-world/"  title="Hello World">
+ <strong>NEXT:</strong><br/> 
+ <span>Hello World
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#_"><span class="toc-number">1.</span> <span class="toc-text"> </span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-_用_R_语言写一个冒泡排序函数（从后往前）_,_要求完整代码并举例实现_-冒泡排序原理："><span class="toc-number">1.1.</span> <span class="toc-text">1. 用 R 语言写一个冒泡排序函数（从后往前） , 要求完整代码并举例实现 .冒泡排序原理：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-_写一个函数，对一个矩阵进行归一化处理_:_例如输入矩阵_a,_进行归一化处理后的结果是_(_注意：归一化处理后，矩阵里的元素全部都在_[0_，_1]_之间_)_："><span class="toc-number">1.2.</span> <span class="toc-text">2. 写一个函数，对一个矩阵进行归一化处理 : 例如输入矩阵 a, 进行归一化处理后的结果是 ( 注意：归一化处理后，矩阵里的元素全部都在 [0 ， 1] 之间 ) ：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-_写一个函数，用递归实现_1_到任意正整数之间的数字的和"><span class="toc-number">1.3.</span> <span class="toc-text">3. 写一个函数，用递归实现 1 到任意正整数之间的数字的和</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Going in one more round when you don&#39;t think you can <br/>
+			that&#39;s what makes all difference in your life.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2255106785" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/Wackyyang" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="WackyYoung">WackyYoung</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
