@@ -1,0 +1,1109 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>R语言矩阵运算 | WackyYang`s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="WackyYoung">
+    
+    <meta name="description" content="主要包括以下内容：创建矩阵向量；矩阵加减，乘积；矩阵的逆；行列式的值；特征值与特征向量；QR分解；奇异值分解；广义逆；backsolve与fowardsolve函数；取矩阵的上下三角元素；向量化算子等.
+1.创建一个向量
+在R中可以用函数c()来创建一个向量，例如：
+&amp;gt;x=c(1,2,3,4)">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="WackyYang`s Blog" title="WackyYang`s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="WackyYang`s Blog">WackyYang`s Blog</a></h1>
+				<h2 class="blog-motto">如果我不曾见过太阳，我本可以忍受黑暗</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">存档</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/10/27/R语言矩阵运算/" title="R语言矩阵运算" itemprop="url">R语言矩阵运算</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="WackyYoung">WackyYoung</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-10-27T04:46:47.000Z" itemprop="datePublished">2014-10-27</time>
+    更新日期:<time datetime="2014-10-27T05:55:51.000Z" itemprop="dateModified">2014-10-27</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-创建一个向量"><span class="toc-number">1.</span> <span class="toc-text">1.创建一个向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-创建一个矩阵"><span class="toc-number">2.</span> <span class="toc-text">2.创建一个矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-矩阵转置"><span class="toc-number">3.</span> <span class="toc-text">3.矩阵转置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-矩阵相加减"><span class="toc-number">4.</span> <span class="toc-text">4.矩阵相加减</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-数与矩阵相乘"><span class="toc-number">5.</span> <span class="toc-text">5.数与矩阵相乘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-矩阵相乘"><span class="toc-number">6.</span> <span class="toc-text">6.矩阵相乘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-矩阵Hadamard积"><span class="toc-number">7.</span> <span class="toc-text">7.矩阵Hadamard积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-矩阵对角元素相关运算"><span class="toc-number">8.</span> <span class="toc-text">8.矩阵对角元素相关运算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-矩阵求逆"><span class="toc-number">9.</span> <span class="toc-text">9.矩阵求逆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-矩阵的特征值与特征向量"><span class="toc-number">10.</span> <span class="toc-text">10.矩阵的特征值与特征向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-矩阵的Choleskey分解"><span class="toc-number">11.</span> <span class="toc-text">11.矩阵的Choleskey分解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-矩阵奇异值分解"><span class="toc-number">12.</span> <span class="toc-text">12.矩阵奇异值分解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-矩阵QR分解"><span class="toc-number">13.</span> <span class="toc-text">13.矩阵QR分解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-矩阵广义逆(Moore-Penrose)"><span class="toc-number">14.</span> <span class="toc-text">14.矩阵广义逆(Moore-Penrose)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-矩阵Kronecker积"><span class="toc-number">15.</span> <span class="toc-text">15.矩阵Kronecker积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-矩阵的维数"><span class="toc-number">16.</span> <span class="toc-text">16.矩阵的维数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-矩阵的行和、列和、行平均与列平均"><span class="toc-number">17.</span> <span class="toc-text">17.矩阵的行和、列和、行平均与列平均</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#18-矩阵X’X的逆"><span class="toc-number">18.</span> <span class="toc-text">18.矩阵X’X的逆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#19-取矩阵的上、下三角部分"><span class="toc-number">19.</span> <span class="toc-text">19.取矩阵的上、下三角部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#20-backsolve&fowardsolve函数"><span class="toc-number">20.</span> <span class="toc-text">20.backsolve&fowardsolve函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#21-row()与col()函数"><span class="toc-number">21.</span> <span class="toc-text">21.row()与col()函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#22-行列式的值"><span class="toc-number">22.</span> <span class="toc-text">22.行列式的值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#23-向量化算子"><span class="toc-number">23.</span> <span class="toc-text">23.向量化算子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#24-时间序列的滞后值"><span class="toc-number">24.</span> <span class="toc-text">24.时间序列的滞后值</span></a></li></ol>
+		</div>
+		
+		<p>主要包括以下内容：<br>创建矩阵向量；矩阵加减，乘积；矩阵的逆；行列式的值；特征值与特征向量；QR分解；奇异值分解；广义逆；backsolve与fowardsolve函数；取矩阵的上下三角元素；向量化算子等.</p>
+<h2 id="1-创建一个向量">1.创建一个向量</h2>
+<p>在R中可以用函数c()来创建一个向量，例如：</p>
+<pre><code><span class="attribute">&gt;x</span>=<span class="string">c(1,2,3,4)
+&gt;x
+[1] 1 2 3 4</span>
+</code></pre><h2 id="2-创建一个矩阵">2.创建一个矩阵</h2>
+<p>在R中可以用函数matrix()来创建一个矩阵，应用该函数时需要输入必要的参数值。</p>
+<pre><code>&gt;args(matrix)
+function (<span class="variable">data =</span> NA, <span class="variable">nrow =</span> <span class="number">1</span>, <span class="variable">ncol =</span> <span class="number">1</span>, <span class="variable">byrow =</span> FALSE, <span class="variable">dimnames =</span> NULL)
+data项为必要的矩阵元素，nrow为行数，ncol为列数，注意nrow与ncol的乘积应为矩阵元素个数，byrow项控制排列元素时是否按行进行，dimnames给定行和列的名称。例如：
+
+&gt;matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">3</span>,<span class="variable">ncol=</span><span class="number">4</span>)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">4</span>   <span class="number">7</span>   <span class="number">10</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">5</span>   <span class="number">8</span>   <span class="number">11</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">6</span>   <span class="number">9</span>   <span class="number">12</span>
+&gt;matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">4</span>,<span class="variable">ncol=</span><span class="number">3</span>)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">5</span>   <span class="number">9</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">6</span>   <span class="number">10</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">7</span>   <span class="number">11</span>
+[<span class="number">4</span>,]   <span class="number">4</span>   <span class="number">8</span>   <span class="number">12</span>
+&gt;matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">4</span>,<span class="variable">ncol=</span><span class="number">3</span>,<span class="variable">byrow=</span>T)
+[,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">3</span>
+[<span class="number">2</span>,]   <span class="number">4</span>   <span class="number">5</span>   <span class="number">6</span>
+[<span class="number">3</span>,]   <span class="number">7</span>   <span class="number">8</span>   <span class="number">9</span>
+[<span class="number">4</span>,]   <span class="number">10</span>   <span class="number">11</span>   <span class="number">12</span>
+&gt;rowname
+[<span class="number">1</span>] <span class="string">"r1"</span> <span class="string">"r2"</span> <span class="string">"r3"</span>
+&gt;<span class="variable">colname=</span>c(<span class="string">"c1"</span>,<span class="string">"c2"</span>,<span class="string">"c3"</span>,<span class="string">"c4"</span>)
+&gt;colname
+[<span class="number">1</span>] <span class="string">"c1"</span> <span class="string">"c2"</span> <span class="string">"c3"</span> <span class="string">"c4"</span>
+&gt;matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">3</span>,<span class="variable">ncol=</span><span class="number">4</span>,<span class="variable">dimnames=</span>list(rowname,colname))
+  c1 c2 c3 c4
+r1 <span class="number">1</span> <span class="number">4</span> <span class="number">7</span> <span class="number">10</span>
+r2 <span class="number">2</span> <span class="number">5</span> <span class="number">8</span> <span class="number">11</span>
+</code></pre><h2 id="3-矩阵转置">3.矩阵转置</h2>
+<p>A为m×n矩阵，求A’在R中可用函数t()，例如：</p>
+<pre><code>&gt;<span class="variable">A=</span>matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">3</span>,<span class="variable">ncol=</span><span class="number">4</span>)
+&gt;A
+       [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">4</span>   <span class="number">7</span>   <span class="number">10</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">5</span>   <span class="number">8</span>   <span class="number">11</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">6</span>   <span class="number">9</span>   <span class="number">12</span>
+&gt;t(A)
+   [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">3</span>
+[<span class="number">2</span>,]   <span class="number">4</span>   <span class="number">5</span>   <span class="number">6</span>
+[<span class="number">3</span>,]   <span class="number">7</span>   <span class="number">8</span>   <span class="number">9</span>
+[<span class="number">4</span>,]   <span class="number">10</span>   <span class="number">11</span>   <span class="number">12</span>
+</code></pre><p><strong>注：若将函数t()作用于一个向量x，则R默认x为列向量，返回结果为一个行向量，例如：</strong></p>
+<pre><code>&gt;x
+<span class="attr_selector">[1]</span> 1 2 3 4 5 6 7 8 9 10
+&gt;<span class="function">t</span>(x)
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span> <span class="attr_selector">[,5]</span> <span class="attr_selector">[,6]</span> <span class="attr_selector">[,7]</span> <span class="attr_selector">[,8]</span> <span class="attr_selector">[,9]</span> <span class="attr_selector">[,10]</span>
+<span class="attr_selector">[1,]</span>   1   2   3   4   5   6   7   8   9   10
+&gt;<span class="function">class</span>(x)
+<span class="attr_selector">[1]</span> "integer"
+&gt;<span class="function">class</span>(<span class="function">t</span>(x))
+<span class="attr_selector">[1]</span> "matrix"
+</code></pre><p>若想得到一个列向量，可用t(t(x))，例如：</p>
+<pre><code><span class="attribute">&gt;x
+[1] 1 2 3 4 5 6 7 8 9 10
+&gt;t(t(x))
+    [,1]
+[1,]   1
+[2,]   2
+[3,]   3
+[4,]   4
+[5,]   5
+[6,]   6
+[7,]   7
+[8,]   8
+[9,]   9
+[10,]  10
+&gt;y</span>=<span class="string">t(t(x))
+&gt;t(t(y))
+    [,1]
+[1,]   1
+[2,]   2
+[3,]   3
+[4,]   4
+[5,]   5
+[6,]   6
+[7,]   7
+[8,]   8
+[9,]   9
+[10,]   10</span>
+</code></pre><h2 id="4-矩阵相加减">4.矩阵相加减</h2>
+<p>在R中对同行同列矩阵相加减，可用符号：“＋”、“－”，例如：</p>
+<pre><code>&gt;<span class="variable">A=</span><span class="variable">B=</span>matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">3</span>,<span class="variable">ncol=</span><span class="number">4</span>)
+&gt;A+B
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">2</span>   <span class="number">8</span>   <span class="number">14</span>   <span class="number">20</span>
+[<span class="number">2</span>,]   <span class="number">4</span>   <span class="number">10</span>   <span class="number">16</span>   <span class="number">22</span>
+[<span class="number">3</span>,]   <span class="number">6</span>   <span class="number">12</span>   <span class="number">18</span>   <span class="number">24</span>
+&gt;A-B
+   [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>
+[<span class="number">2</span>,]   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>
+[<span class="number">3</span>,]   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>
+</code></pre><h2 id="5-数与矩阵相乘">5.数与矩阵相乘</h2>
+<p>A为m×n矩阵，c&gt;0，在R中求cA可用符号：“*”，例如：</p>
+<pre><code>&gt;<span class="built_in">c</span>=<span class="number">2</span>
+&gt;<span class="built_in">c</span>*<span class="type">A</span>
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">2</span>   <span class="number">8</span>   <span class="number">14</span>   <span class="number">20</span>
+[<span class="number">2</span>,]   <span class="number">4</span>   <span class="number">10</span>  <span class="number">16</span>   <span class="number">22</span>
+[<span class="number">3</span>,]   <span class="number">6</span>   <span class="number">12</span>  <span class="number">18</span>   <span class="number">24</span>
+</code></pre><h2 id="6-矩阵相乘">6.矩阵相乘</h2>
+<p>A为m×n矩阵，B为n×k矩阵，在R中求AB可用符号：“％*％”，例如：</p>
+<pre><code>&gt;<span class="variable">A=</span>matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">3</span>,<span class="variable">ncol=</span><span class="number">4</span>)
+&gt;<span class="variable">B=</span>matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">4</span>,<span class="variable">ncol=</span><span class="number">3</span>)
+&gt;A%*%B
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,]   <span class="number">70</span>  <span class="number">158</span> <span class="number">246</span>
+[<span class="number">2</span>,]   <span class="number">80</span>  <span class="number">184</span> <span class="number">288</span>
+[<span class="number">3</span>,]   <span class="number">90</span>  <span class="number">210</span> <span class="number">330</span>
+</code></pre><p><strong>注：若A为n×m矩阵，要得到A’B，可用函数crossprod()，该函数计算结果与t(A)%*%B相同，但是效率更高。例如：</strong></p>
+<pre><code>&gt;<span class="variable">A=</span>matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">4</span>,<span class="variable">ncol=</span><span class="number">3</span>)
+&gt;<span class="variable">B=</span>matrix(<span class="number">1</span>:<span class="number">12</span>,<span class="variable">nrow=</span><span class="number">4</span>,<span class="variable">ncol=</span><span class="number">3</span>)
+&gt;t(A)%*%B
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,]  <span class="number">30</span>   <span class="number">70</span> <span class="number">110</span>
+[<span class="number">2</span>,]  <span class="number">70</span>  <span class="number">174</span> <span class="number">278</span>
+[<span class="number">3</span>,] <span class="number">110</span>  <span class="number">278</span> <span class="number">446</span>
+&gt;crossprod(A,B)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,]  <span class="number">30</span>  <span class="number">70</span> <span class="number">110</span>
+[<span class="number">2</span>,]  <span class="number">70</span> <span class="number">174</span> <span class="number">278</span>
+[<span class="number">3</span>,] <span class="number">110</span> <span class="number">278</span> <span class="number">446</span>
+</code></pre><h2 id="7-矩阵Hadamard积">7.矩阵Hadamard积</h2>
+<p>若A={aij}m×n, B={bij}m×n, 则矩阵的Hadamard积定义为：<br>A⊙B={aij bij }m×n,R中Hadamard积可以直接运用运算符“*”例如：</p>
+<pre><code><span class="label">&gt;A=matrix(1:</span><span class="number">16</span>,<span class="number">4</span>,<span class="number">4</span>)
+&gt;<span class="literal">A</span>
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">5</span>   <span class="number">9</span>   <span class="number">13</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">6</span>   <span class="number">10</span>   <span class="number">14</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">7</span>   <span class="number">11</span>   <span class="number">15</span>
+[<span class="number">4</span>,]   <span class="number">4</span>   <span class="number">8</span>   <span class="number">12</span>   <span class="number">16</span>
+B=<span class="literal">A</span>
+<span class="literal">A</span>*B
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">25</span>   <span class="number">81</span> <span class="number">169</span>
+[<span class="number">2</span>,]   <span class="number">4</span>   <span class="number">36</span> <span class="number">100</span> <span class="number">196</span>
+[<span class="number">3</span>,]   <span class="number">9</span>   <span class="number">49</span> <span class="number">121</span> <span class="number">225</span>
+[<span class="number">4</span>,]   <span class="number">16</span>   <span class="number">64</span> <span class="number">144</span> <span class="number">256</span>
+</code></pre><p><strong><em>R中这两个运算符的区别区加以注意</em></strong>。</p>
+<h2 id="8-矩阵对角元素相关运算">8.矩阵对角元素相关运算</h2>
+<p>例如要取一个方阵的对角元素</p>
+<pre><code>&gt;<span class="variable">A=</span>matrix(<span class="number">1</span>:<span class="number">16</span>,<span class="variable">nrow=</span><span class="number">4</span>,<span class="variable">ncol=</span><span class="number">4</span>)
+&gt;A
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">5</span>   <span class="number">9</span>   <span class="number">13</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">6</span>   <span class="number">10</span>   <span class="number">14</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">7</span>   <span class="number">11</span>   <span class="number">15</span>
+[<span class="number">4</span>,]   <span class="number">4</span>   <span class="number">8</span>   <span class="number">12</span>   <span class="number">16</span>
+diag(A)
+[<span class="number">1</span>] <span class="number">1</span> <span class="number">6</span> <span class="number">11</span> <span class="number">16</span>
+</code></pre><p>对一个向量应用diag()函数将产生以这个向量为对角元素的对角矩阵，例如：</p>
+<pre><code>&gt;<span class="function">diag</span>(<span class="function">diag</span>(<span class="tag">A</span>))
+    <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   1   0   0   0
+<span class="attr_selector">[2,]</span>   0   6   0   0
+<span class="attr_selector">[3,]</span>   0   0   11   0
+<span class="attr_selector">[4,]</span>   0   0   0   16
+</code></pre><p>对一个正整数z应用diag()函数将产生以z维单位矩阵，例如：</p>
+<pre><code>&gt;<span class="function">diag</span>(3)
+    <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span>
+<span class="attr_selector">[1,]</span>   1   0   0
+<span class="attr_selector">[2,]</span>   0   1   0
+<span class="attr_selector">[3,]</span>   0   0   1
+</code></pre><h2 id="9-矩阵求逆">9.矩阵求逆</h2>
+<p>矩阵求逆可用函数solve()，应用solve(a, b)运算结果是解线性方程组ax = b，若b缺省，则系统默认为单位矩阵，因此可用其进行矩阵求逆，例如：</p>
+<pre><code>&gt; a=matrix(rnorm(<span class="number">16</span>),<span class="number">4</span>,<span class="number">4</span>)
+<span class="input"><span class="prompt">&gt; a
+    [,1] [,2] [,3] [,4]
+[1,] 1.6986019   0.5239738 0.2332094 0.3174184
+[2,] -0.2010667 1.0913013 -1.2093734   0.8096514
+[3,] -0.1797628 -0.7573283 0.2864535 1.3679963
+[4,] -0.2217916 -0.3754700 0.1696771 -1.2424030
+&gt;</span> solve(a)</span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+<span class="input"><span class="prompt">[1,] 0.9096360 0.54057479 0.7234861 1.3813059
+[2,] -0.6464172 -0.91849017 -1.7546836 -2.6957775
+[3,] -0.7841661 -1.78780083 -1.5795262 -3.1046207
+[4,] -0.0741260 -0.06308603 0.1854137 -0.6607851
+&gt;</span> solve (a) %*%a</span>
+    [,<span class="number">1</span>]   [,<span class="number">2</span>]   [,<span class="number">3</span>]   [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">1.000000</span>e+<span class="number">00</span> <span class="number">2.748453</span>e-<span class="number">17</span> -<span class="number">2.787755</span>e-<span class="number">17</span> -<span class="number">8.023096</span>e-<span class="number">17</span>
+[<span class="number">2</span>,] <span class="number">1.626303</span>e-<span class="number">19</span> <span class="number">1.000000</span>e+<span class="number">00</span> -<span class="number">4.960225</span>e-<span class="number">18</span> <span class="number">6.977925</span>e-<span class="number">16</span>
+[<span class="number">3</span>,] <span class="number">2.135878</span>e-<span class="number">17</span> -<span class="number">4.629543</span>e-<span class="number">17</span> <span class="number">1.000000</span>e+<span class="number">00</span> <span class="number">6.201636</span>e-<span class="number">17</span>
+[<span class="number">4</span>,] <span class="number">1.866183</span>e-<span class="number">17</span> <span class="number">1.563962</span>e-<span class="number">17</span> <span class="number">1.183813</span>e-<span class="number">17</span> <span class="number">1.000000</span>e+<span class="number">00</span>
+</code></pre><h2 id="10-矩阵的特征值与特征向量">10.矩阵的特征值与特征向量</h2>
+<p>矩阵A的谱分解为A=UΛU’,其中Λ是由A的特征值组成的对角矩阵，U的列为A的特征值对应的特征向量，在R中可以用函数eigen()函数得到U和Λ，</p>
+<pre><code>&gt; args(eigen)
+<span class="function"><span class="keyword">function</span> <span class="params">(x, symmetric, only.values = <span class="keyword">FALSE</span>, EISPACK = <span class="keyword">FALSE</span>)</span></span>
+</code></pre><p>其中：x为矩阵，symmetric项指定矩阵x是否为对称矩阵，若不指定，系统将自动检测x是否为对称矩阵。例如：</p>
+<pre><code>&gt; <span class="literal">A</span>=diag(<span class="number">4</span>)+<span class="number">1</span>
+&gt; <span class="literal">A</span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">2</span>   <span class="number">1</span>   <span class="number">1</span>   <span class="number">1</span>
+[<span class="number">2</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">1</span>   <span class="number">1</span>
+[<span class="number">3</span>,]   <span class="number">1</span>   <span class="number">1</span>   <span class="number">2</span>   <span class="number">1</span>
+[<span class="number">4</span>,]   <span class="number">1</span>   <span class="number">1</span>   <span class="number">1</span>   <span class="number">2</span>
+&gt; <span class="literal">A</span>.eigen=eigen(<span class="literal">A</span>,symmetric=T)
+&gt; <span class="literal">A</span>.eigen
+values[<span class="number">1</span>]<span class="number">5111</span>vectors
+    [,<span class="number">1</span>] [,<span class="number">2</span>]   [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">0.5</span> <span class="number">0.8660254</span> <span class="number">0.000000</span>e+<span class="number">00</span> <span class="number">0.0000000</span>
+[<span class="number">2</span>,] <span class="number">0.5</span> -<span class="number">0.2886751</span> -<span class="number">6.408849</span>e-<span class="number">17</span> <span class="number">0.8164966</span>
+[<span class="number">3</span>,] <span class="number">0.5</span> -<span class="number">0.2886751</span> -<span class="number">7.071068</span>e-<span class="number">01</span> -<span class="number">0.4082483</span>
+[<span class="number">4</span>,] <span class="number">0.5</span> -<span class="number">0.2886751</span> <span class="number">7.071068</span>e-<span class="number">01</span> -<span class="number">0.4082483</span>
+&gt; <span class="literal">A</span>.eigenvectorsvalues)<span class="var_expand">%*%</span>t(<span class="literal">A</span>.eigenvectors) 
+    [,<span class="number">1</span>][,<span class="number">2</span>][,<span class="number">3</span>][,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">2</span>   <span class="number">1</span>   <span class="number">1</span>   <span class="number">1</span>
+[<span class="number">2</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">1</span>   <span class="number">1</span>
+[<span class="number">3</span>,]   <span class="number">1</span>   <span class="number">1</span>   <span class="number">2</span>   <span class="number">1</span>
+[<span class="number">4</span>,]   <span class="number">1</span>   <span class="number">1</span>   <span class="number">1</span>   <span class="number">2</span>
+&gt;t(<span class="literal">A</span>.eigenvectors)<span class="var_expand">%*%</span><span class="literal">A</span>.eigen$vectors
+            [,<span class="number">1</span>]           [,<span class="number">2</span>]           [,<span class="number">3</span>]             [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">1.000000</span>e+<span class="number">00</span> <span class="number">4.377466</span>e-<span class="number">17</span> <span class="number">1.626303</span>e-<span class="number">17</span> -<span class="number">5.095750</span>e-<span class="number">18</span>
+[<span class="number">2</span>,] <span class="number">4.377466</span>e-<span class="number">17</span> <span class="number">1.000000</span>e+<span class="number">00</span> -<span class="number">1.694066</span>e-<span class="number">18</span> <span class="number">6.349359</span>e-<span class="number">18</span>
+[<span class="number">3</span>,] <span class="number">1.626303</span>e-<span class="number">17</span> -<span class="number">1.694066</span>e-<span class="number">18</span> <span class="number">1.000000</span>e+<span class="number">00</span> -<span class="number">1.088268</span>e-<span class="number">16</span>
+[<span class="number">4</span>,] -<span class="number">5.095750</span>e-<span class="number">18</span> <span class="number">6.349359</span>e-<span class="number">18</span> -<span class="number">1.088268</span>e-<span class="number">16</span> <span class="number">1.000000</span>e+<span class="number">00</span>
+</code></pre><h2 id="11-矩阵的Choleskey分解">11.矩阵的Choleskey分解</h2>
+<p>  对于正定矩阵A，可对其进行Choleskey分解，即：A=P’P，其中P为上三角矩阵，在R中可以用函数chol()进行Choleskey分解，例如：</p>
+<pre><code>&gt; <span class="tag">A</span>
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   2   1   1   1
+<span class="attr_selector">[2,]</span>   1   2   1   1
+<span class="attr_selector">[3,]</span>   1   1   2   1
+<span class="attr_selector">[4,]</span>   1   1   1   2
+&gt; <span class="function">chol</span>(<span class="tag">A</span>)
+    <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 1<span class="class">.414214</span> 0<span class="class">.7071068</span> 0<span class="class">.7071068</span> 0<span class="class">.7071068</span>
+<span class="attr_selector">[2,]</span> 0<span class="class">.000000</span> 1<span class="class">.2247449</span> 0<span class="class">.4082483</span> 0<span class="class">.4082483</span>
+<span class="attr_selector">[3,]</span> 0<span class="class">.000000</span> 0<span class="class">.0000000</span> 1<span class="class">.1547005</span> 0<span class="class">.2886751</span>
+<span class="attr_selector">[4,]</span> 0<span class="class">.000000</span> 0<span class="class">.0000000</span> 0<span class="class">.0000000</span> 1<span class="class">.1180340</span>
+&gt; <span class="function">t</span>(<span class="function">chol</span>(<span class="tag">A</span>))%*%<span class="function">chol</span>(<span class="tag">A</span>)
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   2   1   1   1
+<span class="attr_selector">[2,]</span>   1   2   1   1
+<span class="attr_selector">[3,]</span>   1   1   2   1
+<span class="attr_selector">[4,]</span>   1   1   1   2
+&gt; <span class="function">crossprod</span>(<span class="function">chol</span>(<span class="tag">A</span>),<span class="function">chol</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   2   1   1   1
+<span class="attr_selector">[2,]</span>   1   2   1   1
+<span class="attr_selector">[3,]</span>   1   1   2   1
+<span class="attr_selector">[4,]</span>   1   1   1   2
+</code></pre><p>若矩阵为对称正定矩阵，可以利用Choleskey分解求行列式的值，如：</p>
+<pre><code>&gt; <span class="function">prod</span>(<span class="function">diag</span>(<span class="function">chol</span>(<span class="tag">A</span>))^2)
+<span class="attr_selector">[1]</span> 5
+&gt; <span class="function">det</span>(<span class="tag">A</span>)
+<span class="attr_selector">[1]</span> 5
+</code></pre><p>若矩阵为对称正定矩阵，可以利用Choleskey分解求矩阵的逆，这时用函数chol2inv()，这种用法更有效。如：</p>
+<pre><code>&gt; <span class="function">chol2inv</span>(<span class="function">chol</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 0<span class="class">.8</span> -0<span class="class">.2</span> -0<span class="class">.2</span> -0<span class="class">.2</span>
+<span class="attr_selector">[2,]</span> -0<span class="class">.2</span> 0<span class="class">.8</span> -0<span class="class">.2</span> -0<span class="class">.2</span>
+<span class="attr_selector">[3,]</span> -0<span class="class">.2</span> -0<span class="class">.2</span> 0<span class="class">.8</span> -0<span class="class">.2</span>
+<span class="attr_selector">[4,]</span> -0<span class="class">.2</span> -0<span class="class">.2</span> -0<span class="class">.2</span> 0<span class="class">.8</span>
+&gt; <span class="function">solve</span>(<span class="tag">A</span>)
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 0<span class="class">.8</span> -0<span class="class">.2</span> -0<span class="class">.2</span> -0<span class="class">.2</span>
+<span class="attr_selector">[2,]</span> -0<span class="class">.2</span> 0<span class="class">.8</span> -0<span class="class">.2</span> -0<span class="class">.2</span>
+<span class="attr_selector">[3,]</span> -0<span class="class">.2</span> -0<span class="class">.2</span> 0<span class="class">.8</span> -0<span class="class">.2</span>
+<span class="attr_selector">[4,]</span> -0<span class="class">.2</span> -0<span class="class">.2</span> -0<span class="class">.2</span> 0<span class="class">.8</span>
+</code></pre><h2 id="12-矩阵奇异值分解">12.矩阵奇异值分解</h2>
+<p>  A为m×n矩阵，rank(A)= r, 可以分解为：A=UDV’,其中U’U=V’V=I。在R中可以用函数scd()进行奇异值分解，例如：</p>
+<pre><code>&gt; <span class="constant">A</span>=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">18</span>,<span class="number">3</span>,<span class="number">6</span>)
+<span class="input"><span class="prompt">&gt; A
+      [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]   1   4   7   10   13   16
+[2,]   2   5   8   11   14   17
+[3,]   3   6   9   12   15   18
+&gt;</span> svd(<span class="constant">A</span>)</span>
+d[<span class="number">1</span>]<span class="number">4.589453</span>e+<span class="number">011</span>.<span class="number">640705</span>e+<span class="number">003</span>.<span class="number">627301</span>e?<span class="number">16</span>u
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+[<span class="number">1</span>,] -<span class="number">0</span>.<span class="number">5290354</span> <span class="number">0</span>.<span class="number">74394551</span> <span class="number">0</span>.<span class="number">4082483</span>
+[<span class="number">2</span>,] -<span class="number">0</span>.<span class="number">5760715</span> <span class="number">0</span>.<span class="number">03</span>840487 -<span class="number">0</span>.<span class="number">8164966</span>
+[<span class="number">3</span>,] -<span class="number">0</span>.<span class="number">6231077</span> -<span class="number">0</span>.<span class="number">66713577</span> <span class="number">0</span>.<span class="number">4082483</span>
+v     [,<span class="number">1</span>]  [,<span class="number">2</span>]  [,<span class="number">3</span>]
+[<span class="number">1</span>,]<span class="string">?0</span>.<span class="number">0773621</span>9?<span class="number">0</span>.<span class="number">7196003</span>?<span class="number">0</span>.<span class="number">18918124</span>
+[<span class="number">2</span>,]<span class="string">?0</span>.<span class="number">19033085</span>?<span class="number">0</span>.<span class="number">50893250.42405898</span>
+[<span class="number">3</span>,]<span class="string">?0</span>.<span class="number">30329950</span>?<span class="number">0</span>.<span class="number">2982646</span>?<span class="number">0</span>.<span class="number">45330031</span>
+[<span class="number">4</span>,]<span class="string">?0</span>.<span class="number">41626816</span>?<span class="number">0</span>.0875968?<span class="number">0</span>.<span class="number">01637004</span>
+[<span class="number">5</span>,]<span class="string">?0</span>.<span class="number">529236820.12307110</span>.<span class="number">64231130</span>
+[<span class="number">6</span>,]<span class="string">?0</span>.<span class="number">642205480.3337389</span>?<span class="number">0</span>.<span class="number">40751869</span>
+&gt;<span class="constant">A</span>.svd=svd(<span class="constant">A</span>)&gt;<span class="constant">A</span>.svdu%*%diag(<span class="constant">A</span>.svdd)v)
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>] [,<span class="number">5</span>] [,<span class="number">6</span>]
+<span class="input"><span class="prompt">[1,]   1   4   7   10   13   16
+[2,]   2   5   8   11   14   17
+[3,]   3   6   9   12   15   18
+&gt;</span> t(<span class="constant">A</span>.svdu)u</span>
+    [,<span class="number">1</span>]   [,<span class="number">2</span>]   [,<span class="number">3</span>]
+<span class="input"><span class="prompt">[1,] 1.000000e+00 -1.169312e-16 -3.016793e-17
+[2,] -1.169312e-16 1.000000e+00 -3.678156e-17
+[3,] -3.016793e-17 -3.678156e-17 1.000000e+00
+&gt;</span> t(<span class="constant">A</span>.svdv)v</span>
+    [,<span class="number">1</span>]   [,<span class="number">2</span>]   [,<span class="number">3</span>]
+[<span class="number">1</span>,] <span class="number">1.000000</span>e+<span class="number">00</span> <span class="number">8.248068</span>e-<span class="number">17</span> -<span class="number">3.903128</span>e-<span class="number">18</span>
+[<span class="number">2</span>,] <span class="number">8.248068</span>e-<span class="number">17</span> <span class="number">1.000000</span>e+<span class="number">00</span> -<span class="number">2.103352</span>e-<span class="number">17</span>
+[<span class="number">3</span>,] -<span class="number">3.903128</span>e-<span class="number">18</span> -<span class="number">2.103352</span>e-<span class="number">17</span> <span class="number">1.000000</span>e+<span class="number">00</span>
+</code></pre><h2 id="13-矩阵QR分解">13.矩阵QR分解</h2>
+<p>A为m×n矩阵可以进行QR分解，A=QR，其中：Q’Q＝I，在R中可以用函数qr()进行QR分解，例如：</p>
+<pre><code>&gt; A=matrix(<span class="number">1</span>:<span class="number">16</span>,<span class="number">4</span>,<span class="number">4</span>)
+&gt; <span class="string">qr(A)</span>
+<span class="string">qr   [,1]</span>  [,<span class="number">2</span>]   [,<span class="number">3</span>]   [,<span class="number">4</span>]
+[<span class="number">1</span>,]?<span class="number">5.4772256</span>?<span class="number">12.7801930</span>?<span class="number">2.008316</span>e+<span class="number">01</span>?<span class="number">2.738613</span>e+<span class="number">01</span>
+[<span class="number">2</span>,]<span class="number">0</span>.<span class="number">3651484</span>?<span class="number">3.2659863</span>?<span class="number">6.531973</span>e+<span class="number">00</span>?<span class="number">9.797959</span>e+<span class="number">00</span>
+[<span class="number">3</span>,]<span class="number">0</span>.<span class="number">5477226</span>?<span class="number">0</span>.<span class="number">37816962.641083</span>e?<span class="number">152.056562</span>e?<span class="number">15</span>
+[<span class="number">4</span>,]<span class="number">0</span>.<span class="number">7302967</span>?<span class="number">0</span>.<span class="number">91247448.583032</span>e?<span class="number">01</span>?<span class="number">2.111449</span>e?<span class="number">16</span>rank
+[<span class="number">1</span>] <span class="number">2</span>
+
+qraux[<span class="number">1</span>]<span class="number">1.182574</span>e+<span class="number">001</span>.<span class="number">156135</span>e+<span class="number">001</span>.<span class="number">513143</span>e+<span class="number">002</span>.<span class="number">111449</span>e?<span class="number">16</span>pivot
+[<span class="number">1</span>] <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span>
+
+attr(,<span class="string">"class"</span>)
+[<span class="number">1</span>] <span class="string">"qr"</span>
+</code></pre><p>rank项返回矩阵的秩，qr项包含了矩阵Q和R的信息，要得到矩阵Q和R，可以用函数qr.Q()和qr.R()作用qr()的返回结果，例如：</p>
+<pre><code>&gt; qr<span class="class">.R</span>(<span class="function">qr</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span>   <span class="attr_selector">[,3]</span>   <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> -5<span class="class">.477226</span> -12<span class="class">.780193</span> -2<span class="class">.008316e</span>+01 -2<span class="class">.738613e</span>+01
+<span class="attr_selector">[2,]</span> 0<span class="class">.000000</span> -3<span class="class">.265986</span> -6<span class="class">.531973e</span>+00 -9<span class="class">.797959e</span>+00
+<span class="attr_selector">[3,]</span> 0<span class="class">.000000</span>   0<span class="class">.000000</span> 2<span class="class">.641083e-15</span> 2<span class="class">.056562e-15</span>
+<span class="attr_selector">[4,]</span> 0<span class="class">.000000</span>   0<span class="class">.000000</span> 0<span class="class">.000000e</span>+00 -2<span class="class">.111449e-16</span>
+&gt; qr<span class="class">.Q</span>(<span class="function">qr</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span>   <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> -0<span class="class">.1825742</span> -8<span class="class">.164966e-01</span> -0<span class="class">.4000874</span> -0<span class="class">.37407225</span>
+<span class="attr_selector">[2,]</span> -0<span class="class">.3651484</span> -4<span class="class">.082483e-01</span> 0<span class="class">.2546329</span> 0<span class="class">.79697056</span>
+<span class="attr_selector">[3,]</span> -0<span class="class">.5477226</span> -8<span class="class">.131516e-19</span> 0<span class="class">.6909965</span> -0<span class="class">.47172438</span>
+<span class="attr_selector">[4,]</span> -0<span class="class">.7302967</span> 4<span class="class">.082483e-01</span> -0<span class="class">.5455419</span> 0<span class="class">.04882607</span>
+&gt; qr<span class="class">.Q</span>(<span class="function">qr</span>(<span class="tag">A</span>))%*%qr<span class="class">.R</span>(<span class="function">qr</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   1   5   9   13
+<span class="attr_selector">[2,]</span>   2   6   10   14
+<span class="attr_selector">[3,]</span>   3   7   11   15
+<span class="attr_selector">[4,]</span>   4   8   12   16
+&gt; <span class="function">t</span>(qr<span class="class">.Q</span>(<span class="function">qr</span>(<span class="tag">A</span>)))%*%qr<span class="class">.Q</span>(<span class="function">qr</span>(<span class="tag">A</span>))
+    <span class="attr_selector">[,1]</span>   <span class="attr_selector">[,2]</span>   <span class="attr_selector">[,3]</span>   <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 1<span class="class">.000000e</span>+00 -1<span class="class">.457168e-16</span> -6<span class="class">.760001e-17</span> -7<span class="class">.659550e-17</span>
+<span class="attr_selector">[2,]</span> -1<span class="class">.457168e-16</span> 1<span class="class">.000000e</span>+00 -4<span class="class">.269046e-17</span> 7<span class="class">.011739e-17</span>
+<span class="attr_selector">[3,]</span> -6<span class="class">.760001e-17</span> -4<span class="class">.269046e-17</span> 1<span class="class">.000000e</span>+00 -1<span class="class">.596437e-16</span>
+<span class="attr_selector">[4,]</span> -7<span class="class">.659550e-17</span> 7<span class="class">.011739e-17</span> -1<span class="class">.596437e-16</span> 1<span class="class">.000000e</span>+00
+&gt; qr<span class="class">.X</span>(<span class="function">qr</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   1   5   9   13
+<span class="attr_selector">[2,]</span>   2   6   10   14
+<span class="attr_selector">[3,]</span>   3   7   11   15
+<span class="attr_selector">[4,]</span>   4   8   12   16
+</code></pre><h2 id="14-矩阵广义逆(Moore-Penrose)">14.矩阵广义逆(Moore-Penrose)</h2>
+<p>  n×m矩阵A+称为m×n矩阵A的Moore-Penrose逆，如果它满足下列条件：<br>①   A A+A=A；②A+A A+= A+；③(A A+)H=A A+；④(A+A)H= A+A<br>在R的MASS包中的函数ginv()可计算矩阵A的Moore-Penrose逆，例如：</p>
+<pre><code><span class="tag">library</span>(“<span class="tag">MASS</span>”)
+&gt; <span class="tag">A</span>
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   1   5   9   13
+<span class="attr_selector">[2,]</span>   2   6   10   14
+<span class="attr_selector">[3,]</span>   3   7   11   15
+<span class="attr_selector">[4,]</span>   4   8   12   16
+&gt; <span class="tag">ginv</span>(<span class="tag">A</span>)
+    <span class="attr_selector">[,1]</span>   <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span>   <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> <span class="tag">-0</span><span class="class">.285</span> <span class="tag">-0</span><span class="class">.1075</span> 0<span class="class">.07</span> 0<span class="class">.2475</span>
+<span class="attr_selector">[2,]</span> <span class="tag">-0</span><span class="class">.145</span> <span class="tag">-0</span><span class="class">.0525</span> 0<span class="class">.04</span> 0<span class="class">.1325</span>
+<span class="attr_selector">[3,]</span> <span class="tag">-0</span><span class="class">.005</span> 0<span class="class">.0025</span> 0<span class="class">.01</span> 0<span class="class">.0175</span>
+<span class="attr_selector">[4,]</span> 0<span class="class">.135</span> 0<span class="class">.0575</span> <span class="tag">-0</span><span class="class">.02</span> <span class="tag">-0</span><span class="class">.0975</span>
+验证性质1：
+&gt; <span class="tag">A</span>%*%<span class="tag">ginv</span>(<span class="tag">A</span>)%*%<span class="tag">A</span>
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   1   5   9   13
+<span class="attr_selector">[2,]</span>   2   6   10   14
+<span class="attr_selector">[3,]</span>   3   7   11   15
+<span class="attr_selector">[4,]</span>   4   8   12   16
+验证性质2：
+&gt; <span class="tag">ginv</span>(<span class="tag">A</span>)%*%<span class="tag">A</span>%*%<span class="tag">ginv</span>(<span class="tag">A</span>)
+    <span class="attr_selector">[,1]</span>   <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span>   <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> <span class="tag">-0</span><span class="class">.285</span> <span class="tag">-0</span><span class="class">.1075</span> 0<span class="class">.07</span> 0<span class="class">.2475</span>
+<span class="attr_selector">[2,]</span> <span class="tag">-0</span><span class="class">.145</span> <span class="tag">-0</span><span class="class">.0525</span> 0<span class="class">.04</span> 0<span class="class">.1325</span>
+<span class="attr_selector">[3,]</span> <span class="tag">-0</span><span class="class">.005</span> 0<span class="class">.0025</span> 0<span class="class">.01</span> 0<span class="class">.0175</span>
+<span class="attr_selector">[4,]</span> 0<span class="class">.135</span> 0<span class="class">.0575</span> <span class="tag">-0</span><span class="class">.02</span> <span class="tag">-0</span><span class="class">.0975</span>
+验证性质3:
+&gt; <span class="tag">t</span>(<span class="tag">A</span>%*%<span class="tag">ginv</span>(<span class="tag">A</span>))
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 0<span class="class">.7</span> 0<span class="class">.4</span> 0<span class="class">.1</span> <span class="tag">-0</span><span class="class">.2</span>
+<span class="attr_selector">[2,]</span> 0<span class="class">.4</span> 0<span class="class">.3</span> 0<span class="class">.2</span> 0<span class="class">.1</span>
+<span class="attr_selector">[3,]</span> 0<span class="class">.1</span> 0<span class="class">.2</span> 0<span class="class">.3</span> 0<span class="class">.4</span>
+<span class="attr_selector">[4,]</span> <span class="tag">-0</span><span class="class">.2</span> 0<span class="class">.1</span> 0<span class="class">.4</span> 0<span class="class">.7</span>
+&gt; <span class="tag">A</span>%*%<span class="tag">ginv</span>(<span class="tag">A</span>)
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 0<span class="class">.7</span> 0<span class="class">.4</span> 0<span class="class">.1</span> <span class="tag">-0</span><span class="class">.2</span>
+<span class="attr_selector">[2,]</span> 0<span class="class">.4</span> 0<span class="class">.3</span> 0<span class="class">.2</span> 0<span class="class">.1</span>
+<span class="attr_selector">[3,]</span> 0<span class="class">.1</span> 0<span class="class">.2</span> 0<span class="class">.3</span> 0<span class="class">.4</span>
+<span class="attr_selector">[4,]</span> <span class="tag">-0</span><span class="class">.2</span> 0<span class="class">.1</span> 0<span class="class">.4</span> 0<span class="class">.7</span>
+验证性质4:
+&gt; <span class="tag">t</span>(<span class="tag">ginv</span>(<span class="tag">A</span>)%*%<span class="tag">A</span>)
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 0<span class="class">.7</span> 0<span class="class">.4</span> 0<span class="class">.1</span> <span class="tag">-0</span><span class="class">.2</span>
+<span class="attr_selector">[2,]</span> 0<span class="class">.4</span> 0<span class="class">.3</span> 0<span class="class">.2</span> 0<span class="class">.1</span>
+<span class="attr_selector">[3,]</span> 0<span class="class">.1</span> 0<span class="class">.2</span> 0<span class="class">.3</span> 0<span class="class">.4</span>
+<span class="attr_selector">[4,]</span> <span class="tag">-0</span><span class="class">.2</span> 0<span class="class">.1</span> 0<span class="class">.4</span> 0<span class="class">.7</span>
+&gt; <span class="tag">ginv</span>(<span class="tag">A</span>)%*%<span class="tag">A</span>
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span> 0<span class="class">.7</span> 0<span class="class">.4</span> 0<span class="class">.1</span> <span class="tag">-0</span><span class="class">.2</span>
+<span class="attr_selector">[2,]</span> 0<span class="class">.4</span> 0<span class="class">.3</span> 0<span class="class">.2</span> 0<span class="class">.1</span>
+<span class="attr_selector">[3,]</span> 0<span class="class">.1</span> 0<span class="class">.2</span> 0<span class="class">.3</span> 0<span class="class">.4</span>
+<span class="attr_selector">[4,]</span> <span class="tag">-0</span><span class="class">.2</span> 0<span class="class">.1</span> 0<span class="class">.4</span> 0<span class="class">.7</span>
+</code></pre><h2 id="15-矩阵Kronecker积">15.矩阵Kronecker积</h2>
+<p>  n×m矩阵A与h×k矩阵B的kronecker积为一个nh×mk维矩阵，<br>在R中kronecker积可以用函数kronecker()来计算，例如：</p>
+<pre><code>&gt; <span class="constant">A</span>=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">4</span>,<span class="number">2</span>,<span class="number">2</span>)
+&gt; <span class="constant">B</span>=matrix(rep(<span class="number">1</span>,<span class="number">4</span>),<span class="number">2</span>,<span class="number">2</span>)
+<span class="input"><span class="prompt">&gt; A
+      [,1] [,2]
+[1,]   1   3
+[2,]   2   4
+&gt;</span> <span class="constant">B</span></span>
+  [,<span class="number">1</span>] [,<span class="number">2</span>]
+<span class="input"><span class="prompt">[1,]   1   1
+[2,]   1   1
+&gt;</span> kronecker(<span class="constant">A</span>,<span class="constant">B</span>)</span>
+  [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">1</span>   <span class="number">3</span>   <span class="number">3</span>
+[<span class="number">2</span>,]   <span class="number">1</span>   <span class="number">1</span>   <span class="number">3</span>   <span class="number">3</span>
+[<span class="number">3</span>,]   <span class="number">2</span>   <span class="number">2</span>   <span class="number">4</span>   <span class="number">4</span>
+[<span class="number">4</span>,]   <span class="number">2</span>   <span class="number">2</span>   <span class="number">4</span>   <span class="number">4</span>
+</code></pre><h2 id="16-矩阵的维数">16.矩阵的维数</h2>
+<p>  在R中很容易得到一个矩阵的维数，函数dim()将返回一个矩阵的维数，nrow()返回行数，ncol()返回列数，例如：</p>
+<pre><code>&gt; <span class="constant">A</span>=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">12</span>,<span class="number">3</span>,<span class="number">4</span>)
+<span class="input"><span class="prompt">&gt; A
+      [,1] [,2] [,3] [,4]
+[1,]   1   4   7   10
+[2,]   2   5   8   11
+[3,]   3   6   9   12
+&gt;</span> nrow(<span class="constant">A</span>)</span>
+<span class="input"><span class="prompt">[1] 3
+&gt;</span> ncol(<span class="constant">A</span>)</span>
+[<span class="number">1</span>] <span class="number">4</span>
+</code></pre><h2 id="17-矩阵的行和、列和、行平均与列平均">17.矩阵的行和、列和、行平均与列平均</h2>
+<p>  在R中很容易求得一个矩阵的各行的和、平均数与列的和、平均数，例如：</p>
+<pre><code> &gt; <span class="tag">A</span>
+      <span class="attr_selector">[,1]</span> <span class="attr_selector">[,2]</span> <span class="attr_selector">[,3]</span> <span class="attr_selector">[,4]</span>
+<span class="attr_selector">[1,]</span>   1   4   7   10
+<span class="attr_selector">[2,]</span>   2   5   8   11
+<span class="attr_selector">[3,]</span>   3   6   9   12
+&gt; <span class="function">rowSums</span>(<span class="tag">A</span>)
+<span class="attr_selector">[1]</span> 22 26 30
+&gt; <span class="function">rowMeans</span>(<span class="tag">A</span>)
+<span class="attr_selector">[1]</span> 5<span class="class">.5</span> 6<span class="class">.5</span> 7<span class="class">.5</span>
+&gt; <span class="function">colSums</span>(<span class="tag">A</span>)
+<span class="attr_selector">[1]</span> 6 15 24 33
+&gt; <span class="function">colMeans</span>(<span class="tag">A</span>)
+<span class="attr_selector">[1]</span> 2 5 8 11
+</code></pre><p>上述关于矩阵行和列的操作，还可以使用apply()函数实现。</p>
+<pre><code>&gt; args(apply)
+
+<span class="keyword">function</span> (X, MARGIN, FUN, <span class="keyword">...</span>)
+其中：x为矩阵，MARGIN用来指定是对行运算还是对列运算，MARGIN＝<span class="number">1</span>表示对行运算，MARGIN＝<span class="number">2</span>表示对列运算，FUN用来指定运算函数, <span class="keyword">...</span>用来给定FUN中需要的其它的参数，例如：
+
+&gt; apply(A,<span class="number">1</span>,sum)
+[<span class="number">1</span>] <span class="number">22</span> <span class="number">26</span> <span class="number">30</span>
+&gt; apply(A,<span class="number">1</span>,mean)
+[<span class="number">1</span>] <span class="number">5.5</span> <span class="number">6.5</span> <span class="number">7.5</span>
+&gt; apply(A,<span class="number">2</span>,sum)
+[<span class="number">1</span>] <span class="number">6</span> <span class="number">15</span> <span class="number">24</span> <span class="number">33</span>
+&gt; apply(A,<span class="number">2</span>,mean)
+[<span class="number">1</span>] <span class="number">2</span> <span class="number">5</span> <span class="number">8</span> <span class="number">11</span>
+</code></pre><p>apply()函数功能强大，我们可以对矩阵的行或者列进行其它运算，例如：<br>计算每一列的方差</p>
+<pre><code>&gt; <span class="literal">A</span>=matrix(rnorm(<span class="number">100</span>),<span class="number">20</span>,<span class="number">5</span>)
+&gt; apply(<span class="literal">A</span>,<span class="number">2</span>,var)
+[<span class="number">1</span>] <span class="number">0.4641787</span> <span class="number">1.4331070</span> <span class="number">0.3186012</span> <span class="number">1.3042711</span> <span class="number">0.5238485</span>
+&gt; apply(<span class="literal">A</span>,<span class="number">2</span>,function(x,<span class="literal">a</span>)x*<span class="literal">a</span>,<span class="literal">a</span>=<span class="number">2</span>)
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">2</span>   <span class="number">8</span>   <span class="number">14</span>   <span class="number">20</span>
+[<span class="number">2</span>,]   <span class="number">4</span>   <span class="number">10</span>   <span class="number">16</span>   <span class="number">22</span>
+[<span class="number">3</span>,]   <span class="number">6</span>   <span class="number">12</span>   <span class="number">18</span>   <span class="number">24</span>
+注意：apply(<span class="literal">A</span>,<span class="number">2</span>,function(x,<span class="literal">a</span>)x*<span class="literal">a</span>,<span class="literal">a</span>=<span class="number">2</span>)与<span class="literal">A</span>*<span class="number">2</span>效果相同，此处旨在说明如何应用alpply函数。
+</code></pre><h2 id="18-矩阵X’X的逆">18.矩阵X’X的逆</h2>
+<p>  在统计计算中，我们常常需要计算这样矩阵的逆，如OLS估计中求系数矩阵。R中包“strucchange”提供了有效的计算方法。</p>
+<pre><code>&gt; args(solveCrossprod)
+
+function (X, <span class="keyword">method</span> = c(<span class="string">"qr"</span>, <span class="string">"chol"</span>, <span class="string">"solve"</span>))
+其中：<span class="keyword">method</span>指定求逆方法，选用“qr”效率最高，选用“chol”精度最高，选用“slove”与slove(crossprod(x,x))效果相同，例如：
+&gt; A=matrix(rnorm(<span class="number">16</span>),<span class="number">4</span>,<span class="number">4</span>)
+&gt; solveCrossprod(A,<span class="keyword">method</span>=<span class="string">"qr"</span>)
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">0</span>.<span class="number">6132102</span> -<span class="number">0</span>.<span class="number">1543924</span> -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">2054730</span>
+[<span class="number">2</span>,] -<span class="number">0</span>.<span class="number">1543924</span> <span class="number">0</span>.<span class="number">4779277</span> <span class="number">0</span>.<span class="number">1859490</span> -<span class="number">0</span>.<span class="number">2097302</span>
+[<span class="number">3</span>,] -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">1859490</span> <span class="number">0</span>.<span class="number">6931232</span> -<span class="number">0</span>.<span class="number">3162961</span>
+[<span class="number">4</span>,] <span class="number">0</span>.<span class="number">2054730</span> -<span class="number">0</span>.<span class="number">2097302</span> -<span class="number">0</span>.<span class="number">3162961</span> <span class="number">0</span>.<span class="number">3447627</span>
+&gt; solveCrossprod(A,<span class="keyword">method</span>=<span class="string">"chol"</span>)
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">0</span>.<span class="number">6132102</span> -<span class="number">0</span>.<span class="number">1543924</span> -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">2054730</span>
+[<span class="number">2</span>,] -<span class="number">0</span>.<span class="number">1543924</span> <span class="number">0</span>.<span class="number">4779277</span> <span class="number">0</span>.<span class="number">1859490</span> -<span class="number">0</span>.<span class="number">2097302</span>
+[<span class="number">3</span>,] -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">1859490</span> <span class="number">0</span>.<span class="number">6931232</span> -<span class="number">0</span>.<span class="number">3162961</span>
+[<span class="number">4</span>,] <span class="number">0</span>.<span class="number">2054730</span> -<span class="number">0</span>.<span class="number">2097302</span> -<span class="number">0</span>.<span class="number">3162961</span> <span class="number">0</span>.<span class="number">3447627</span>
+&gt; solveCrossprod(A,<span class="keyword">method</span>=<span class="string">"solve"</span>)
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">0</span>.<span class="number">6132102</span> -<span class="number">0</span>.<span class="number">1543924</span> -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">2054730</span>
+[<span class="number">2</span>,] -<span class="number">0</span>.<span class="number">1543924</span> <span class="number">0</span>.<span class="number">4779277</span> <span class="number">0</span>.<span class="number">1859490</span> -<span class="number">0</span>.<span class="number">2097302</span>
+[<span class="number">3</span>,] -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">1859490</span> <span class="number">0</span>.<span class="number">6931232</span> -<span class="number">0</span>.<span class="number">3162961</span>
+[<span class="number">4</span>,] <span class="number">0</span>.<span class="number">2054730</span> -<span class="number">0</span>.<span class="number">2097302</span> -<span class="number">0</span>.<span class="number">3162961</span> <span class="number">0</span>.<span class="number">3447627</span>
+&gt; solve(crossprod(A,A))
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="number">0</span>.<span class="number">6132102</span> -<span class="number">0</span>.<span class="number">1543924</span> -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">2054730</span>
+[<span class="number">2</span>,] -<span class="number">0</span>.<span class="number">1543924</span> <span class="number">0</span>.<span class="number">4779277</span> <span class="number">0</span>.<span class="number">1859490</span> -<span class="number">0</span>.<span class="number">2097302</span>
+[<span class="number">3</span>,] -<span class="number">0</span>.<span class="number">2900796</span> <span class="number">0</span>.<span class="number">1859490</span> <span class="number">0</span>.<span class="number">6931232</span> -<span class="number">0</span>.<span class="number">3162961</span>
+[<span class="number">4</span>,] <span class="number">0</span>.<span class="number">2054730</span> -<span class="number">0</span>.<span class="number">2097302</span> -<span class="number">0</span>.<span class="number">3162961</span> <span class="number">0</span>.<span class="number">3447627</span>
+</code></pre><h2 id="19-取矩阵的上、下三角部分">19.取矩阵的上、下三角部分</h2>
+<p>  在R中，我们可以很方便的取到一个矩阵的上、下三角部分的元素，函数lower.tri()和函数upper.tri()提供了有效的方法。</p>
+<pre><code>&gt; args(lower.tri)
+
+function (x, diag = <span class="literal">FALSE</span>)
+函数将返回一个逻辑值矩阵，其中下三角部分为真，上三角部分为假，选项diag为真时包含对角元素，为假时不包含对角元素。upper.tri()的效果与之孑然相反。例如：
+&gt; <span class="literal">A</span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">5</span>   <span class="number">9</span>   <span class="number">13</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">6</span>   <span class="number">10</span>   <span class="number">14</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">7</span>   <span class="number">11</span>   <span class="number">15</span>
+[<span class="number">4</span>,]   <span class="number">4</span>   <span class="number">8</span>   <span class="number">12</span>   <span class="number">16</span>
+&gt; lower.tri(<span class="literal">A</span>)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span>
+[<span class="number">2</span>,] <span class="literal">TRUE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span>
+[<span class="number">3</span>,] <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span>
+[<span class="number">4</span>,] <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">FALSE</span>
+&gt; lower.tri(<span class="literal">A</span>,diag=T)
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="literal">TRUE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span>
+[<span class="number">2</span>,] <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span>
+[<span class="number">3</span>,] <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">FALSE</span>
+[<span class="number">4</span>,] <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span>
+&gt; upper.tri(<span class="literal">A</span>)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="literal">FALSE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span>
+[<span class="number">2</span>,] <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span>
+[<span class="number">3</span>,] <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">TRUE</span>
+[<span class="number">4</span>,] <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span>
+&gt; upper.tri(<span class="literal">A</span>,diag=T)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,] <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span>
+[<span class="number">2</span>,] <span class="literal">FALSE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span>
+[<span class="number">3</span>,] <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">TRUE</span> <span class="literal">TRUE</span>
+[<span class="number">4</span>,] <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">FALSE</span> <span class="literal">TRUE</span>
+&gt; <span class="literal">A</span>[lower.tri(<span class="literal">A</span>)]=<span class="number">0</span>
+&gt; <span class="literal">A</span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">5</span>   <span class="number">9</span>   <span class="number">13</span>
+[<span class="number">2</span>,]   <span class="number">0</span>   <span class="number">6</span>   <span class="number">10</span>   <span class="number">14</span>
+[<span class="number">3</span>,]   <span class="number">0</span>   <span class="number">0</span>   <span class="number">11</span>   <span class="number">15</span>
+[<span class="number">4</span>,]   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>   <span class="number">16</span>
+&gt; <span class="literal">A</span>[upper.tri(<span class="literal">A</span>)]=<span class="number">0</span>
+&gt; <span class="literal">A</span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">0</span>   <span class="number">0</span>   <span class="number">0</span>
+[<span class="number">2</span>,]   <span class="number">2</span>   <span class="number">6</span>   <span class="number">0</span>   <span class="number">0</span>
+[<span class="number">3</span>,]   <span class="number">3</span>   <span class="number">7</span>   <span class="number">11</span>   <span class="number">0</span>
+[<span class="number">4</span>,]   <span class="number">4</span>   <span class="number">8</span>   <span class="number">12</span>   <span class="number">16</span>
+</code></pre><h2 id="20-backsolve&amp;fowardsolve函数">20.backsolve&amp;fowardsolve函数</h2>
+<p>这两个函数用于解特殊线性方程组，其特殊之处在于系数矩阵为上或下三角。</p>
+<pre><code>&gt; args(backsolve)
+
+<span class="function"><span class="keyword">function</span> (</span>r, x, k = ncol(r), upper.tri = <span class="literal">TRUE</span>, transpose = <span class="literal">FALSE</span>)
+&gt; args(forwardsolve)
+<span class="function"><span class="keyword">function</span> (</span>l, x, k = ncol(l), upper.tri = <span class="literal">FALSE</span>, transpose = <span class="literal">FALSE</span>)
+其中：r或者l为n×n维三角矩阵，x为n×<span class="number">1</span>维向量，对给定不同的upper.tri和transpose的值，方程的形式不同
+</code></pre><p>对于函数backsolve()而言，<br>例如：</p>
+<pre><code>&gt; <span class="constant">A</span>=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">9</span>,<span class="number">3</span>,<span class="number">3</span>)
+<span class="input"><span class="prompt">&gt; A
+      [,1] [,2] [,3]
+[1,]   1   4   7
+[2,]   2   5   8
+[3,]   3   6   9
+&gt;</span> x=c(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span>
+<span class="input"><span class="prompt">&gt; x
+[1] 1 2 3
+&gt;</span> <span class="constant">B</span>=<span class="constant">A</span></span>
+&gt; <span class="constant">B</span>[upper.tri(<span class="constant">B</span>)]=<span class="number">0</span>
+<span class="input"><span class="prompt">&gt; B
+      [,1] [,2] [,3]
+[1,]   1   0   0
+[2,]   2   5   0
+[3,]   3   6   9
+&gt;</span> <span class="constant">C</span>=<span class="constant">A</span></span>
+&gt; <span class="constant">C</span>[lower.tri(<span class="constant">C</span>)]=<span class="number">0</span>
+<span class="input"><span class="prompt">&gt; C
+      [,1] [,2] [,3]
+[1,]   1   4   7
+[2,]   0   5   8
+[3,]   0   0   9
+&gt;</span> backsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">T</span>,transpose=<span class="constant">T</span>)</span>
+<span class="input"><span class="prompt">[1] 1.00000000 -0.40000000 -0.08888889
+&gt;</span> solve(t(<span class="constant">C</span>),x)</span>
+<span class="input"><span class="prompt">[1] 1.00000000 -0.40000000 -0.08888889
+&gt;</span> backsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">T</span>,transpose=<span class="constant">F</span>)</span>
+<span class="input"><span class="prompt">[1] -0.8000000 -0.1333333 0.3333333
+&gt;</span> solve(<span class="constant">C</span>,x)</span>
+<span class="input"><span class="prompt">[1] -0.8000000 -0.1333333 0.3333333
+&gt;</span> backsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">F</span>,transpose=<span class="constant">T</span>)</span>
+<span class="input"><span class="prompt">[1] 1.111307e-17 2.220446e-17 3.333333e-01
+&gt;</span> solve(t(<span class="constant">B</span>),x)</span>
+<span class="input"><span class="prompt">[1] 1.110223e-17 2.220446e-17 3.333333e-01
+&gt;</span> backsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">F</span>,transpose=<span class="constant">F</span>)</span>
+<span class="input"><span class="prompt">[1] 1 0 0
+&gt;</span> solve(<span class="constant">B</span>,x)</span>
+[<span class="number">1</span>] <span class="number">1.000000</span>e+<span class="number">00</span> -<span class="number">1.540744</span>e-<span class="number">33</span> -<span class="number">1.850372</span>e-<span class="number">17</span>
+</code></pre><p>对于函数forwardsolve()而言，<br>例如：</p>
+<pre><code><span class="input"><span class="prompt">&gt; A
+      [,1] [,2] [,3]
+[1,]   1   4   7
+[2,]   2   5   8
+[3,]   3   6   9
+&gt;</span> <span class="constant">B</span></span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+<span class="input"><span class="prompt">[1,]   1   0   0
+[2,]   2   5   0
+[3,]   3   6   9
+&gt;</span> <span class="constant">C</span></span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>]
+<span class="input"><span class="prompt">[1,]   1   4   7
+[2,]   0   5   8
+[3,]   0   0   9
+&gt;</span> x</span>
+<span class="input"><span class="prompt">[1] 1 2 3
+&gt;</span> forwardsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">T</span>,transpose=<span class="constant">T</span>)</span>
+<span class="input"><span class="prompt">[1] 1.00000000 -0.40000000 -0.08888889
+&gt;</span> solve(t(<span class="constant">C</span>),x)</span>
+<span class="input"><span class="prompt">[1] 1.00000000 -0.40000000 -0.08888889
+&gt;</span> forwardsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">T</span>,transpose=<span class="constant">F</span>)</span>
+<span class="input"><span class="prompt">[1] -0.8000000 -0.1333333 0.3333333
+&gt;</span> solve(<span class="constant">C</span>,x)</span>
+<span class="input"><span class="prompt">[1] -0.8000000 -0.1333333 0.3333333
+&gt;</span> forwardsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">F</span>,transpose=<span class="constant">T</span>)</span>
+<span class="input"><span class="prompt">[1] 1.111307e-17 2.220446e-17 3.333333e-01
+&gt;</span> solve(t(<span class="constant">B</span>),x)</span>
+<span class="input"><span class="prompt">[1] 1.110223e-17 2.220446e-17 3.333333e-01
+&gt;</span> forwardsolve(<span class="constant">A</span>,x,upper.tri=<span class="constant">F</span>,transpose=<span class="constant">F</span>)</span>
+<span class="input"><span class="prompt">[1] 1 0 0
+&gt;</span> solve(<span class="constant">B</span>,x)</span>
+[<span class="number">1</span>] <span class="number">1.000000</span>e+<span class="number">00</span> -<span class="number">1.540744</span>e-<span class="number">33</span> -<span class="number">1.850372</span>e-<span class="number">17</span>
+</code></pre><h2 id="21-row()与col()函数">21.row()与col()函数</h2>
+<p>在R中定义了的这两个函数用于取矩阵元素的行或列下标矩阵，例如矩阵A={aij}m×n，<br>row()函数将返回一个与矩阵A有相同维数的矩阵，该矩阵的第i行第j列元素为i，函数col()类似。例如：</p>
+<pre><code>&gt; x=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">12</span>,<span class="number">3</span>,<span class="number">4</span>)
+<span class="input"><span class="prompt">&gt; row(x)
+      [,1] [,2] [,3] [,4]
+[1,]   1   1   1   1
+[2,]   2   2   2   2
+[3,]   3   3   3   3
+&gt;</span> col(x)</span>
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">3</span>   <span class="number">4</span>
+[<span class="number">2</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">3</span>   <span class="number">4</span>
+[<span class="number">3</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">3</span>   <span class="number">4</span>
+</code></pre><p>这两个函数同样可以用于取一个矩阵的上下三角矩阵，例如：</p>
+<pre><code><span class="input"><span class="prompt">&gt; x
+      [,1] [,2] [,3] [,4]
+[1,]   1   4   7   10
+[2,]   2   5   8   11
+[3,]   3   6   9   12
+&gt;</span> x[row(x)</span>
+<span class="input"><span class="prompt">&gt; x
+      [,1] [,2] [,3] [,4]
+[1,]   1   0   0   0
+[2,]   2   5   0   0
+[3,]   3   6   9   0
+&gt;</span> x=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">12</span>,<span class="number">3</span>,<span class="number">4</span>)</span>
+&gt; x[row(x)&gt;col(x)]=<span class="number">0</span>
+&gt; x
+      [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">4</span>   <span class="number">7</span>   <span class="number">10</span>
+[<span class="number">2</span>,]   <span class="number">0</span>   <span class="number">5</span>   <span class="number">8</span>   <span class="number">11</span>
+[<span class="number">3</span>,]   <span class="number">0</span>   <span class="number">0</span>   <span class="number">9</span>   <span class="number">12</span>
+</code></pre><h2 id="22-行列式的值">22.行列式的值</h2>
+<p>在R中，函数det(x)将计算方阵x的行列式的值，例如：</p>
+<pre><code>&gt; x=matrix(rnorm(<span class="number">16</span>),<span class="number">4</span>,<span class="number">4</span>)
+<span class="input"><span class="prompt">&gt; x
+      [,1] [,2] [,3] [,4]
+[1,] -1.0736375 0.2809563 -1.5796854 0.51810378
+[2,] -1.6229898 -0.4175977 1.2038194 -0.06394986
+[3,] -0.3989073 -0.8368334 -0.6374909 -0.23657088
+[4,] 1.9413061 0.8338065 -1.5877162 -1.30568465
+&gt;</span> det(x)</span>
+[<span class="number">1</span>] <span class="number">5.717667</span>
+</code></pre><h2 id="23-向量化算子">23.向量化算子</h2>
+<p>在R中可以很容易的实现向量化算子，例如：</p>
+<pre><code>vec&lt;-function (x){
+  t(t(as.vector(x)))
+}
+vech&lt;-function (x){
+  t(x[lower.tri(x,diag=<span class="constant">T</span>)])
+<span class="input"><span class="prompt">}
+&gt;</span> x=matrix(<span class="number">1</span><span class="symbol">:</span><span class="number">12</span>,<span class="number">3</span>,<span class="number">4</span>)</span>
+<span class="input"><span class="prompt">&gt; x
+      [,1] [,2] [,3] [,4]
+[1,]   1   4   7   10
+[2,]   2   5   8   11
+[3,]   3   6   9   12
+&gt;</span> vec(x)</span>
+<span class="input"><span class="prompt">[,1]
+[1,]   1
+[2,]   2
+[3,]   3
+[4,]   4
+[5,]   5
+[6,]   6
+[7,]   7
+[8,]   8
+[9,]   9
+[10,]   10
+[11,]   11
+[12,]   12
+&gt;</span> vech(x)</span>
+  [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>] [,<span class="number">5</span>] [,<span class="number">6</span>]
+[<span class="number">1</span>,]   <span class="number">1</span>   <span class="number">2</span>   <span class="number">3</span>   <span class="number">5</span>   <span class="number">6</span>   <span class="number">9</span>
+</code></pre><h2 id="24-时间序列的滞后值">24.时间序列的滞后值</h2>
+<p>  在时间序列分析中，我们常常要用到一个序列的滞后序列，R中的包“fMultivar”中的函数tslag()提供了这个功能。</p>
+<pre><code>&gt; args(tslag)
+
+<span class="keyword">function</span> (x, k = <span class="number">1</span>, trim = <span class="literal">FALSE</span>)
+其中：x为一个向量，k指定滞后阶数，可以是一个自然数列，若trim为假，则返回序列与原序列长度相同，但含有<span class="literal">NA</span>值；若trim项为真，则返回序列中不含有<span class="literal">NA</span>值，例如：
+&gt; x=<span class="number">1</span>:<span class="number">20</span>
+&gt; tslag(x,<span class="number">1</span>:<span class="number">4</span>,trim=<span class="literal">F</span>)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="literal">NA</span>   <span class="literal">NA</span>   <span class="literal">NA</span>   <span class="literal">NA</span>
+[<span class="number">2</span>,]   <span class="number">1</span>   <span class="literal">NA</span>   <span class="literal">NA</span>   <span class="literal">NA</span>
+[<span class="number">3</span>,]   <span class="number">2</span>   <span class="number">1</span>   <span class="literal">NA</span>   <span class="literal">NA</span>
+[<span class="number">4</span>,]   <span class="number">3</span>   <span class="number">2</span>   <span class="number">1</span>   <span class="literal">NA</span>
+[<span class="number">5</span>,]   <span class="number">4</span>   <span class="number">3</span>   <span class="number">2</span>   <span class="number">1</span>
+[<span class="number">6</span>,]   <span class="number">5</span>   <span class="number">4</span>   <span class="number">3</span>   <span class="number">2</span>
+[<span class="number">7</span>,]   <span class="number">6</span>   <span class="number">5</span>   <span class="number">4</span>   <span class="number">3</span>
+[<span class="number">8</span>,]   <span class="number">7</span>   <span class="number">6</span>   <span class="number">5</span>   <span class="number">4</span>
+[<span class="number">9</span>,]   <span class="number">8</span>   <span class="number">7</span>   <span class="number">6</span>   <span class="number">5</span>
+[<span class="number">10</span>,]   <span class="number">9</span>   <span class="number">8</span>   <span class="number">7</span>   <span class="number">6</span>
+[<span class="number">11</span>,]   <span class="number">10</span>   <span class="number">9</span>   <span class="number">8</span>   <span class="number">7</span>
+[<span class="number">12</span>,]   <span class="number">11</span>   <span class="number">10</span>   <span class="number">9</span>   <span class="number">8</span>
+[<span class="number">13</span>,]   <span class="number">12</span>   <span class="number">11</span>   <span class="number">10</span>   <span class="number">9</span>
+[<span class="number">14</span>,]   <span class="number">13</span>   <span class="number">12</span>   <span class="number">11</span>   <span class="number">10</span>
+[<span class="number">15</span>,]   <span class="number">14</span>   <span class="number">13</span>   <span class="number">12</span>   <span class="number">11</span>
+[<span class="number">16</span>,]   <span class="number">15</span>   <span class="number">14</span>   <span class="number">13</span>   <span class="number">12</span>
+[<span class="number">17</span>,]   <span class="number">16</span>   <span class="number">15</span>   <span class="number">14</span>   <span class="number">13</span>
+[<span class="number">18</span>,]   <span class="number">17</span>   <span class="number">16</span>   <span class="number">15</span>   <span class="number">14</span>
+[<span class="number">19</span>,]   <span class="number">18</span>   <span class="number">17</span>   <span class="number">16</span>   <span class="number">15</span>
+[<span class="number">20</span>,]   <span class="number">19</span>   <span class="number">18</span>   <span class="number">17</span>   <span class="number">16</span>
+&gt; tslag(x,<span class="number">1</span>:<span class="number">4</span>,trim=<span class="literal">T</span>)
+    [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]
+[<span class="number">1</span>,]   <span class="number">4</span>   <span class="number">3</span>   <span class="number">2</span>   <span class="number">1</span>
+[<span class="number">2</span>,]   <span class="number">5</span>   <span class="number">4</span>   <span class="number">3</span>   <span class="number">2</span>
+[<span class="number">3</span>,]   <span class="number">6</span>   <span class="number">5</span>   <span class="number">4</span>   <span class="number">3</span>
+[<span class="number">4</span>,]   <span class="number">7</span>   <span class="number">6</span>   <span class="number">5</span>   <span class="number">4</span>
+[<span class="number">5</span>,]   <span class="number">8</span>   <span class="number">7</span>   <span class="number">6</span>   <span class="number">5</span>
+[<span class="number">6</span>,]   <span class="number">9</span>   <span class="number">8</span>   <span class="number">7</span>   <span class="number">6</span>
+[<span class="number">7</span>,]   <span class="number">10</span>   <span class="number">9</span>   <span class="number">8</span>   <span class="number">7</span>
+[<span class="number">8</span>,]   <span class="number">11</span>   <span class="number">10</span>   <span class="number">9</span>   <span class="number">8</span>
+[<span class="number">9</span>,]   <span class="number">12</span>   <span class="number">11</span>   <span class="number">10</span>   <span class="number">9</span>
+[<span class="number">10</span>,]   <span class="number">13</span>   <span class="number">12</span>   <span class="number">11</span>   <span class="number">10</span>
+[<span class="number">11</span>,]   <span class="number">14</span>   <span class="number">13</span>   <span class="number">12</span>   <span class="number">11</span>
+[<span class="number">12</span>,]   <span class="number">15</span>   <span class="number">14</span>   <span class="number">13</span>   <span class="number">12</span>
+[<span class="number">13</span>,]   <span class="number">16</span>   <span class="number">15</span>   <span class="number">14</span>   <span class="number">13</span>
+[<span class="number">14</span>,]   <span class="number">17</span>   <span class="number">16</span>   <span class="number">15</span>   <span class="number">14</span>
+[<span class="number">15</span>,]   <span class="number">18</span>   <span class="number">17</span>   <span class="number">16</span>   <span class="number">15</span>
+[<span class="number">16</span>,]   <span class="number">19</span>   <span class="number">18</span>   <span class="number">17</span>   <span class="number">16</span>
+</code></pre>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/R-Language/">R Language</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/数据科学/">数据科学</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/10/27/R语言矩阵运算/" data-title="R语言矩阵运算 | WackyYang`s Blog" data-tsina="2255106785" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/10/25/Unit 3 Notes/"  title="Unit 3 Notes">
+ <strong>NEXT:</strong><br/> 
+ <span>Unit 3 Notes
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-创建一个向量"><span class="toc-number">1.</span> <span class="toc-text">1.创建一个向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-创建一个矩阵"><span class="toc-number">2.</span> <span class="toc-text">2.创建一个矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-矩阵转置"><span class="toc-number">3.</span> <span class="toc-text">3.矩阵转置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-矩阵相加减"><span class="toc-number">4.</span> <span class="toc-text">4.矩阵相加减</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-数与矩阵相乘"><span class="toc-number">5.</span> <span class="toc-text">5.数与矩阵相乘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-矩阵相乘"><span class="toc-number">6.</span> <span class="toc-text">6.矩阵相乘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-矩阵Hadamard积"><span class="toc-number">7.</span> <span class="toc-text">7.矩阵Hadamard积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-矩阵对角元素相关运算"><span class="toc-number">8.</span> <span class="toc-text">8.矩阵对角元素相关运算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-矩阵求逆"><span class="toc-number">9.</span> <span class="toc-text">9.矩阵求逆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-矩阵的特征值与特征向量"><span class="toc-number">10.</span> <span class="toc-text">10.矩阵的特征值与特征向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-矩阵的Choleskey分解"><span class="toc-number">11.</span> <span class="toc-text">11.矩阵的Choleskey分解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-矩阵奇异值分解"><span class="toc-number">12.</span> <span class="toc-text">12.矩阵奇异值分解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-矩阵QR分解"><span class="toc-number">13.</span> <span class="toc-text">13.矩阵QR分解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-矩阵广义逆(Moore-Penrose)"><span class="toc-number">14.</span> <span class="toc-text">14.矩阵广义逆(Moore-Penrose)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-矩阵Kronecker积"><span class="toc-number">15.</span> <span class="toc-text">15.矩阵Kronecker积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-矩阵的维数"><span class="toc-number">16.</span> <span class="toc-text">16.矩阵的维数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-矩阵的行和、列和、行平均与列平均"><span class="toc-number">17.</span> <span class="toc-text">17.矩阵的行和、列和、行平均与列平均</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#18-矩阵X’X的逆"><span class="toc-number">18.</span> <span class="toc-text">18.矩阵X’X的逆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#19-取矩阵的上、下三角部分"><span class="toc-number">19.</span> <span class="toc-text">19.取矩阵的上、下三角部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#20-backsolve&fowardsolve函数"><span class="toc-number">20.</span> <span class="toc-text">20.backsolve&fowardsolve函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#21-row()与col()函数"><span class="toc-number">21.</span> <span class="toc-text">21.row()与col()函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#22-行列式的值"><span class="toc-number">22.</span> <span class="toc-text">22.行列式的值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#23-向量化算子"><span class="toc-number">23.</span> <span class="toc-text">23.向量化算子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#24-时间序列的滞后值"><span class="toc-number">24.</span> <span class="toc-text">24.时间序列的滞后值</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/English-Learning/" title="English Learning">English Learning<sup>2</sup></a></li>
+		
+			<li><a href="/categories/数据科学/" title="数据科学">数据科学<sup>2</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Fundamental-English-Writing/" title="Fundamental English Writing">Fundamental English Writing<sup>2</sup></a></li>
+		
+			<li><a href="/tags/R-Language/" title="R Language">R Language<sup>1</sup></a></li>
+		
+			<li><a href="/tags/homework/" title="homework">homework<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Going in one more round when you don&#39;t think you can <br/>
+			that&#39;s what makes all difference in your life.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2255106785" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/Wackyyang" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="WackyYoung">WackyYoung</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
