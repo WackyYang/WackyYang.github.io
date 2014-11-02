@@ -1,0 +1,421 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>KNN-K近邻算法判断信用卡风险 | WackyYang`s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="WackyYoung">
+    
+    <meta name="description" content="1. 数据准备和整理
+12345678910111213141516171819setwd(&quot;D:/OneDrive/Document/Open Class/Coursear/机器学习/R训练营/2014-10-29&quot;)german = read.table(&quot;./KNN算法练习 - 德国信用卡/g">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="WackyYang`s Blog" title="WackyYang`s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="WackyYang`s Blog">WackyYang`s Blog</a></h1>
+				<h2 class="blog-motto">如果我不曾见过太阳，我本可以忍受黑暗</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">存档</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/02/KNN for German credit card risk/" title="KNN-K近邻算法判断信用卡风险" itemprop="url">KNN-K近邻算法判断信用卡风险</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="WackyYoung">WackyYoung</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-02T13:34:13.000Z" itemprop="datePublished">2014-11-02</time>
+    更新日期:<time datetime="2014-11-02T13:38:56.000Z" itemprop="dateModified">2014-11-02</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_数据准备和整理"><span class="toc-number">1.</span> <span class="toc-text">1. 数据准备和整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_数据集结构和内容的基本分析："><span class="toc-number">2.</span> <span class="toc-text">2. 数据集结构和内容的基本分析：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-_构造训练集、测试集"><span class="toc-number">3.</span> <span class="toc-text">3. 构造训练集、测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-_构建模型"><span class="toc-number">4.</span> <span class="toc-text">4. 构建模型</span></a></li></ol>
+		</div>
+		
+		<h2 id="1-_数据准备和整理">1. 数据准备和整理</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">setwd(<span class="string">"D:/OneDrive/Document/Open Class/Coursear/机器学习/R训练营/2014-10-29"</span>)</div><div class="line">german = read.table(<span class="string">"./KNN算法练习 - 德国信用卡/german.data"</span>,sep=<span class="string">""</span>)</div><div class="line">german.names = c(<span class="string">"Status_of_account"</span>,<span class="string">"Duration"</span>,<span class="string">"Credit_history"</span>,<span class="string">"Purpose"</span>,<span class="string">"Credit_amount"</span>,<span class="string">"Savings_account"</span>,<span class="string">"employmentYears"</span>,<span class="string">"Installment_rate"</span>,<span class="string">"Personal_status_and_sex"</span>,<span class="string">"debtors"</span>,<span class="string">"Present_residence"</span>,<span class="string">"Property"</span>,<span class="string">"Age"</span>,<span class="string">"Other_installment_plans"</span>,<span class="string">"Housing"</span>,<span class="string">"Number_of_existing_credits"</span>,<span class="string">"Job"</span>,<span class="string">"Service"</span>,<span class="string">"Telephone"</span>,<span class="string">"foreign_worker"</span>,<span class="string">"risks"</span>)</div><div class="line">names(german)=german.names</div><div class="line"><span class="comment">## 因knn算法只支持numeric，所以需要对其它factor变量进行类型转换</span></div><div class="line">german$Status_of_account=as.integer(german$Status_of_account)</div><div class="line">german$Credit_history=as.integer(german$Credit_history)</div><div class="line">german$Purpose=as.integer(german$Purpose)</div><div class="line">german$Savings_account=as.integer(german$Savings_account)</div><div class="line">german$employmentYears=as.integer(german$employmentYears)</div><div class="line">german$Personal_status_and_sex=as.integer(german$Personal_status_and_sex)</div><div class="line">german$ debtors=as.integer(german$ debtors)</div><div class="line">german$Property=as.integer(german$Property)</div><div class="line">german$Other_installment_plans=as.integer(german$Other_installment_plans)</div><div class="line">german$Housing=as.integer(german$Housing)</div><div class="line">german$Job=as.integer(german$Job)</div><div class="line">german=german[c(-<span class="number">5</span>,-<span class="number">19</span>,-<span class="number">20</span>)]</div><div class="line"><span class="comment">## 同时对风险因子标签具体化</span></div><div class="line">german$risks=factor(german$risks,levels=c(<span class="string">'1'</span>,<span class="string">'2'</span>),labels=c(<span class="string">"Good"</span>,<span class="string">"Bad"</span>))</div></pre></td></tr></table></figure>
+
+<h2 id="2-_数据集结构和内容的基本分析：">2. 数据集结构和内容的基本分析：</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dim(german)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## [1] 1000   18</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">str(german)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## 'data.frame':	1000 obs. of  18 variables:</span></div><div class="line"><span class="preprocessor">##  $ Status_of_account         : int  1 2 4 1 1 4 4 2 4 2 ...</span></div><div class="line"><span class="preprocessor">##  $ Duration                  : int  6 48 12 42 24 36 24 36 12 30 ...</span></div><div class="line"><span class="preprocessor">##  $ Credit_history            : int  5 3 5 3 4 3 3 3 3 5 ...</span></div><div class="line"><span class="preprocessor">##  $ Purpose                   : int  5 5 8 4 1 8 4 2 5 1 ...</span></div><div class="line"><span class="preprocessor">##  $ Savings_account           : int  5 1 1 1 1 5 3 1 4 1 ...</span></div><div class="line"><span class="preprocessor">##  $ employmentYears           : int  5 3 4 4 3 3 5 3 4 1 ...</span></div><div class="line"><span class="preprocessor">##  $ Installment_rate          : int  4 2 2 2 3 2 3 2 2 4 ...</span></div><div class="line"><span class="preprocessor">##  $ Personal_status_and_sex   : int  3 2 3 3 3 3 3 3 1 4 ...</span></div><div class="line"><span class="preprocessor">##  $ debtors                   : int  1 1 1 3 1 1 1 1 1 1 ...</span></div><div class="line"><span class="preprocessor">##  $ Present_residence         : int  4 2 3 4 4 4 4 2 4 2 ...</span></div><div class="line"><span class="preprocessor">##  $ Property                  : int  1 1 1 2 4 4 2 3 1 3 ...</span></div><div class="line"><span class="preprocessor">##  $ Age                       : int  67 22 49 45 53 35 53 35 61 28 ...</span></div><div class="line"><span class="preprocessor">##  $ Other_installment_plans   : int  3 3 3 3 3 3 3 3 3 3 ...</span></div><div class="line"><span class="preprocessor">##  $ Housing                   : int  2 2 2 3 3 3 2 1 2 2 ...</span></div><div class="line"><span class="preprocessor">##  $ Number_of_existing_credits: int  2 1 1 1 2 1 1 1 1 2 ...</span></div><div class="line"><span class="preprocessor">##  $ Job                       : int  3 3 2 3 3 2 3 4 2 4 ...</span></div><div class="line"><span class="preprocessor">##  $ Service                   : int  1 1 2 2 2 2 1 1 1 1 ...</span></div><div class="line"><span class="preprocessor">##  $ risks                     : Factor w/ 2 levels "Good","Bad": 1 2 1 1 2 1 1 1 1 2 ...</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## 从这里我们知道数据集中700个样本为Good，300个为bad</span></div><div class="line">table(german$risks)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">## Good  Bad </span></div><div class="line"><span class="preprocessor">##  700  300</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">round(prop.table(table(german$risks)),digits=<span class="number">2</span>)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">## Good  Bad </span></div><div class="line"><span class="preprocessor">##  0.7  0.3</span></div></pre></td></tr></table></figure>
+
+<h2 id="3-_构造训练集、测试集">3. 构造训练集、测试集</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(caret)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">## Warnin<span class="variable">g:</span> package <span class="string">'caret'</span> was built under R <span class="keyword">version</span> <span class="number">3.1</span>.<span class="number">1</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">## Loading <span class="keyword">required</span> <span class="keyword">package</span>: lattice</div><div class="line">## Loading <span class="keyword">required</span> <span class="keyword">package</span>: ggplot2</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">set.seed(<span class="number">1024</span>)</div><div class="line">german_n = german[<span class="number">1</span>:<span class="number">17</span>]</div><div class="line">inTrain = createDataPartition(y=german$risks,p=<span class="number">0.8</span>,list=<span class="literal">F</span>)</div><div class="line">german_train = german_n[inTrain,]</div><div class="line">german_test = german_n[-inTrain,]</div><div class="line">german_train_lable = german[inTrain,<span class="number">18</span>]</div><div class="line">german_test_lable = german[-inTrain,<span class="number">18</span>]</div><div class="line">mal_rate = table(german_train_lable)</div><div class="line">round(mal_rate[<span class="number">2</span>] / sum(mal_rate), digits=<span class="number">2</span>)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## Bad </span></div><div class="line"><span class="preprocessor">## 0.3</span></div></pre></td></tr></table></figure>
+
+<h2 id="4-_构建模型">4. 构建模型</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(class)</div><div class="line">german_test_pred = knn(train=german_train,test=german_test,cl=german_train_lable,k=<span class="number">14</span>)</div></pre></td></tr></table></figure>
+
+<ol>
+<li>模型评估 — 采用‘gmodels’的‘CrossTable’函数</li>
+</ol>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(gmodels)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">## Warnin<span class="variable">g:</span> package <span class="string">'gmodels'</span> was built under R <span class="keyword">version</span> <span class="number">3.1</span>.<span class="number">1</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CrossTable(x=german_test_lable,y=german_test_pred,prop.chisq=<span class="literal">F</span>)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">##    Cell Contents</span></div><div class="line"><span class="preprocessor">## |-------------------------|</span></div><div class="line"><span class="preprocessor">## |                       N |</span></div><div class="line"><span class="preprocessor">## |           N / Row Total |</span></div><div class="line"><span class="preprocessor">## |           N / Col Total |</span></div><div class="line"><span class="preprocessor">## |         N / Table Total |</span></div><div class="line"><span class="preprocessor">## |-------------------------|</span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">## Total Observations in Table:  200 </span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">##                   | german_test_pred </span></div><div class="line"><span class="preprocessor">## german_test_lable |      Good |       Bad | Row Total | </span></div><div class="line"><span class="preprocessor">## ------------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##              Good |       128 |        12 |       140 | </span></div><div class="line"><span class="preprocessor">##                   |     0.914 |     0.086 |     0.700 | </span></div><div class="line"><span class="preprocessor">##                   |     0.719 |     0.545 |           | </span></div><div class="line"><span class="preprocessor">##                   |     0.640 |     0.060 |           | </span></div><div class="line"><span class="preprocessor">## ------------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##               Bad |        50 |        10 |        60 | </span></div><div class="line"><span class="preprocessor">##                   |     0.833 |     0.167 |     0.300 | </span></div><div class="line"><span class="preprocessor">##                   |     0.281 |     0.455 |           | </span></div><div class="line"><span class="preprocessor">##                   |     0.250 |     0.050 |           | </span></div><div class="line"><span class="preprocessor">## ------------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##      Column Total |       178 |        22 |       200 | </span></div><div class="line"><span class="preprocessor">##                   |     0.890 |     0.110 |           | </span></div><div class="line"><span class="preprocessor">## ------------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##</span></div></pre></td></tr></table></figure>
+
+<p>从评估的模型来看，准确率P =(128+10)/200 * 100 = 69%，准确率有些偏低，尤其是高风险给错判成了低风险的，还需改进。（下次改进版用决策树试试！！）</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/机器学习/">机器学习</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/数据科学/">数据科学</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/11/02/KNN for German credit card risk/" data-title="KNN-K近邻算法判断信用卡风险 | WackyYang`s Blog" data-tsina="2255106785" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/10/28/Gradient Descent for LM /"  title="单变量线性回归 - 梯度下降算法">
+ <strong>NEXT:</strong><br/> 
+ <span>单变量线性回归 - 梯度下降算法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_数据准备和整理"><span class="toc-number">1.</span> <span class="toc-text">1. 数据准备和整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_数据集结构和内容的基本分析："><span class="toc-number">2.</span> <span class="toc-text">2. 数据集结构和内容的基本分析：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-_构造训练集、测试集"><span class="toc-number">3.</span> <span class="toc-text">3. 构造训练集、测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-_构建模型"><span class="toc-number">4.</span> <span class="toc-text">4. 构建模型</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/English-Learning/" title="English Learning">English Learning<sup>2</sup></a></li>
+		
+			<li><a href="/categories/数据科学/" title="数据科学">数据科学<sup>4</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Fundamental-English-Writing/" title="Fundamental English Writing">Fundamental English Writing<sup>2</sup></a></li>
+		
+			<li><a href="/tags/R-Language/" title="R Language">R Language<sup>1</sup></a></li>
+		
+			<li><a href="/tags/homework/" title="homework">homework<sup>1</sup></a></li>
+		
+			<li><a href="/tags/机器学习/" title="机器学习">机器学习<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Going in one more round when you don&#39;t think you can <br/>
+			that&#39;s what makes all difference in your life.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2255106785" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/Wackyyang" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="WackyYoung">WackyYoung</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
