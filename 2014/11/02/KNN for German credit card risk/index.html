@@ -80,7 +80,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-11-02T13:34:13.000Z" itemprop="datePublished">2014-11-02</time>
-    更新日期:<time datetime="2014-11-02T13:41:14.000Z" itemprop="dateModified">2014-11-02</time>
+    更新日期:<time datetime="2014-11-02T13:46:24.000Z" itemprop="dateModified">2014-11-02</time>
     
   </p>
 </header>
@@ -89,7 +89,7 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_数据准备和整理"><span class="toc-number">1.</span> <span class="toc-text">1. 数据准备和整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_数据集结构和内容的基本分析"><span class="toc-number">2.</span> <span class="toc-text">2. 数据集结构和内容的基本分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-_构造训练集、测试集"><span class="toc-number">3.</span> <span class="toc-text">3. 构造训练集、测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-_构建模型"><span class="toc-number">4.</span> <span class="toc-text">4. 构建模型</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_数据准备和整理"><span class="toc-number">1.</span> <span class="toc-text">1. 数据准备和整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_数据集结构和内容的基本分析"><span class="toc-number">2.</span> <span class="toc-text">2. 数据集结构和内容的基本分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-_构造训练集、测试集"><span class="toc-number">3.</span> <span class="toc-text">3. 构造训练集、测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-_构建模型"><span class="toc-number">4.</span> <span class="toc-text">4. 构建模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-_模型评估_—_采用‘gmodels’的‘CrossTable’函数"><span class="toc-number">5.</span> <span class="toc-text">5. 模型评估 — 采用‘gmodels’的‘CrossTable’函数</span></a></li></ol>
 		</div>
 		
 		<h2 id="1-_数据准备和整理">1. 数据准备和整理</h2>
@@ -148,9 +148,7 @@
 <h2 id="4-_构建模型">4. 构建模型</h2>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(class)</div><div class="line">german_test_pred = knn(train=german_train,test=german_test,cl=german_train_lable,k=<span class="number">14</span>)</div></pre></td></tr></table></figure>
 
-<ol>
-<li>模型评估 — 采用‘gmodels’的‘CrossTable’函数</li>
-</ol>
+<h2 id="5-_模型评估_—_采用‘gmodels’的‘CrossTable’函数">5. 模型评估 — 采用‘gmodels’的‘CrossTable’函数</h2>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(gmodels)</div></pre></td></tr></table></figure>
 
 
@@ -215,7 +213,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_数据准备和整理"><span class="toc-number">1.</span> <span class="toc-text">1. 数据准备和整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_数据集结构和内容的基本分析"><span class="toc-number">2.</span> <span class="toc-text">2. 数据集结构和内容的基本分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-_构造训练集、测试集"><span class="toc-number">3.</span> <span class="toc-text">3. 构造训练集、测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-_构建模型"><span class="toc-number">4.</span> <span class="toc-text">4. 构建模型</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-_数据准备和整理"><span class="toc-number">1.</span> <span class="toc-text">1. 数据准备和整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-_数据集结构和内容的基本分析"><span class="toc-number">2.</span> <span class="toc-text">2. 数据集结构和内容的基本分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-_构造训练集、测试集"><span class="toc-number">3.</span> <span class="toc-text">3. 构造训练集、测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-_构建模型"><span class="toc-number">4.</span> <span class="toc-text">4. 构建模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-_模型评估_—_采用‘gmodels’的‘CrossTable’函数"><span class="toc-number">5.</span> <span class="toc-text">5. 模型评估 — 采用‘gmodels’的‘CrossTable’函数</span></a></li></ol>
   </div>
 
 <div id="asidepart">
