@@ -1,0 +1,426 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>真假币辨别 | WackyYang`s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="WackyYoung">
+    
+    <meta name="description" content="数据来源：http://archive.ics.uci.edu/ml/datasets/banknote+authentication
+数据准备及前处理
+123setwd(&quot;D:/OneDrive/Document/Open Class/Coursear/机器学习/R训练营/2014-11-06/B">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="WackyYang`s Blog" title="WackyYang`s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="WackyYang`s Blog">WackyYang`s Blog</a></h1>
+				<h2 class="blog-motto">如果我不曾见过太阳，我本可以忍受黑暗</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">主页</a></li>
+					
+						<li><a href="/archives">存档</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/08/banknote_authentication/" title="真假币辨别" itemprop="url">真假币辨别</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="WackyYoung">WackyYoung</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-08T07:07:45.000Z" itemprop="datePublished">2014-11-08</time>
+    更新日期:<time datetime="2014-11-08T07:13:56.000Z" itemprop="dateModified">2014-11-08</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据准备及前处理"><span class="toc-number">1.</span> <span class="toc-text">数据准备及前处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备训练集和测试集"><span class="toc-number">2.</span> <span class="toc-text">准备训练集和测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用KNN算法构建模型和评估模型"><span class="toc-number">3.</span> <span class="toc-text">使用KNN算法构建模型和评估模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Bayes算法构建模型和评估模型"><span class="toc-number">4.</span> <span class="toc-text">使用Bayes算法构建模型和评估模型</span></a></li></ol>
+		</div>
+		
+		<p><strong>数据来源</strong>：<br><a href="http://archive.ics.uci.edu/ml/datasets/banknote+authentication" target="_blank" rel="external">http://archive.ics.uci.edu/ml/datasets/banknote+authentication</a></p>
+<h2 id="数据准备及前处理">数据准备及前处理</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">setwd(<span class="string">"D:/OneDrive/Document/Open Class/Coursear/机器学习/R训练营/2014-11-06/Banknote Authentication"</span>)</div><div class="line">BA_raw = read.table(file=<span class="string">"./data_banknote_authentication.txt"</span>,header=<span class="literal">F</span>,sep=<span class="string">","</span>)</div><div class="line">head(BA_raw,<span class="number">3</span>)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">##      V1     V2     V3      V4 V5</span></div><div class="line"><span class="preprocessor">## 1 3.622  8.666 -2.807 -0.4470  0</span></div><div class="line"><span class="preprocessor">## 2 4.546  8.167 -2.459 -1.4621  0</span></div><div class="line"><span class="preprocessor">## 3 3.866 -2.638  1.924  0.1065  0</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">BA_names = c(<span class="string">"variance of Wavelet"</span>,<span class="string">"skewness of Wavelet"</span>,<span class="string">"curtosis of Wavelet"</span>,</div><div class="line">             <span class="string">"entropy of image"</span>,<span class="string">"class"</span>)</div><div class="line">names(BA_raw)=BA_names</div><div class="line">dim(BA_raw)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## [1] 1372    5</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">str(BA_raw)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## 'data.frame':	1372 obs. of  5 variables:</span></div><div class="line"><span class="preprocessor">##  $ variance of Wavelet: num  3.622 4.546 3.866 3.457 0.329 ...</span></div><div class="line"><span class="preprocessor">##  $ skewness of Wavelet: num  8.67 8.17 -2.64 9.52 -4.46 ...</span></div><div class="line"><span class="preprocessor">##  $ curtosis of Wavelet: num  -2.81 -2.46 1.92 -4.01 4.57 ...</span></div><div class="line"><span class="preprocessor">##  $ entropy of image   : num  -0.447 -1.462 0.106 -3.594 -0.989 ...</span></div><div class="line"><span class="preprocessor">##  $ class              : int  0 0 0 0 0 0 0 0 0 0 ...</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">BA_raw$class = factor(x=BA_raw$class,levels=c(<span class="number">0</span>,<span class="number">1</span>),labels=c(<span class="string">"假币"</span>,<span class="string">"真币"</span>))</div><div class="line"><span class="comment"># 假币数量762，真币数量610</span></div><div class="line">prop.table(table(BA_raw$class))</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##   假币   真币 </span></div><div class="line"><span class="preprocessor">## 0.5554 0.4446</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">BA = BA_raw[-<span class="number">5</span>]</div><div class="line"><span class="comment"># 对数据进行归一化处理</span></div><div class="line">normalize = <span class="keyword">function</span>(x)</div><div class="line">    <span class="keyword">return</span> ((x-min(x)) / (max(x)-min(x)))</div><div class="line">BA = apply(X=BA,MARGIN=<span class="number">2</span>,FUN=normalize)</div><div class="line"><span class="comment"># BA = as.data.frame(lapply(BA,normalize))</span></div><div class="line">summary(BA)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">##  variance of Wavelet skewness of Wavelet curtosis of Wavelet</span></div><div class="line"><span class="preprocessor">##  Min.   :0.000       Min.   :0.000       Min.   :0.000      </span></div><div class="line"><span class="preprocessor">##  1st Qu.:0.380       1st Qu.:0.452       1st Qu.:0.160      </span></div><div class="line"><span class="preprocessor">##  Median :0.544       Median :0.602       Median :0.254      </span></div><div class="line"><span class="preprocessor">##  Mean   :0.539       Mean   :0.587       Mean   :0.288      </span></div><div class="line"><span class="preprocessor">##  3rd Qu.:0.711       3rd Qu.:0.770       3rd Qu.:0.365      </span></div><div class="line"><span class="preprocessor">##  Max.   :1.000       Max.   :1.000       Max.   :1.000      </span></div><div class="line"><span class="preprocessor">##  entropy of image</span></div><div class="line"><span class="preprocessor">##  Min.   :0.000   </span></div><div class="line"><span class="preprocessor">##  1st Qu.:0.558   </span></div><div class="line"><span class="preprocessor">##  Median :0.724   </span></div><div class="line"><span class="preprocessor">##  Mean   :0.669   </span></div><div class="line"><span class="preprocessor">##  3rd Qu.:0.813   </span></div><div class="line"><span class="preprocessor">##  Max.   :1.000</span></div></pre></td></tr></table></figure>
+
+<h2 id="准备训练集和测试集">准备训练集和测试集</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">set.seed(<span class="number">2012</span>)</div><div class="line"><span class="keyword">library</span>(caret)</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">## Loading <span class="keyword">required</span> <span class="keyword">package</span>: lattice</div><div class="line">## Loading <span class="keyword">required</span> <span class="keyword">package</span>: ggplot2</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">inTrain = createDataPartition(BA_raw$class,<span class="number">1</span>,<span class="number">0.75</span>,list=<span class="literal">F</span>)</div><div class="line">BA_train = BA[inTrain,]</div><div class="line">BA_train_lables = BA_raw[inTrain,<span class="number">5</span>]</div><div class="line">BA_test = BA[-inTrain,]</div><div class="line">BA_test_lables = BA_raw[-inTrain,<span class="number">5</span>]</div><div class="line">prop.table(table(BA_train_lables))</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## BA_train_lables</span></div><div class="line"><span class="preprocessor">##   假币   真币 </span></div><div class="line"><span class="preprocessor">## 0.5553 0.4447</span></div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">prop.table(table(BA_test_lables))</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## BA_test_lables</span></div><div class="line"><span class="preprocessor">##   假币   真币 </span></div><div class="line"><span class="preprocessor">## 0.5556 0.4444</span></div></pre></td></tr></table></figure>
+
+<h2 id="使用KNN算法构建模型和评估模型">使用KNN算法构建模型和评估模型</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(class)</div><div class="line">BA_test_pred = knn3Train(train=BA_train,test=BA_test,cl=BA_train_lables,k=<span class="number">14</span>)</div><div class="line"><span class="keyword">library</span>(gmodels)</div><div class="line">CrossTable(x=BA_test_lables,y=BA_test_pred,prop.chisq=<span class="literal">F</span>,dnn=c(<span class="string">"实际"</span>,<span class="string">"预测"</span>))</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">##    Cell Contents</span></div><div class="line"><span class="preprocessor">## |-------------------------|</span></div><div class="line"><span class="preprocessor">## |                       N |</span></div><div class="line"><span class="preprocessor">## |           N / Row Total |</span></div><div class="line"><span class="preprocessor">## |           N / Col Total |</span></div><div class="line"><span class="preprocessor">## |         N / Table Total |</span></div><div class="line"><span class="preprocessor">## |-------------------------|</span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">## Total Observations in Table:  342 </span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">##              | 预测 </span></div><div class="line"><span class="preprocessor">##         实际 |      假币 |      真币 | Row Total | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##         假币 |       188 |         2 |       190 | </span></div><div class="line"><span class="preprocessor">##              |     0.989 |     0.011 |     0.556 | </span></div><div class="line"><span class="preprocessor">##              |     1.000 |     0.013 |           | </span></div><div class="line"><span class="preprocessor">##              |     0.550 |     0.006 |           | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##         真币 |         0 |       152 |       152 | </span></div><div class="line"><span class="preprocessor">##              |     0.000 |     1.000 |     0.444 | </span></div><div class="line"><span class="preprocessor">##              |     0.000 |     0.987 |           | </span></div><div class="line"><span class="preprocessor">##              |     0.000 |     0.444 |           | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">## Column Total |       188 |       154 |       342 | </span></div><div class="line"><span class="preprocessor">##              |     0.550 |     0.450 |           | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##</span></div></pre></td></tr></table></figure>
+
+<h2 id="使用Bayes算法构建模型和评估模型">使用Bayes算法构建模型和评估模型</h2>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(e1071)</div><div class="line">BA_classifier = naiveBayes(x=BA_train,y=BA_train_lables,laplace=<span class="number">0.5</span>)</div><div class="line">BA_test_pred2 = predict(BA_classifier,BA_test)</div><div class="line">CrossTable(x=BA_test_lables,y=BA_test_pred2,prop.chisq=<span class="literal">F</span>,dnn=c(<span class="string">"实际"</span>,<span class="string">"预测"</span>))</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">##    Cell Contents</span></div><div class="line"><span class="preprocessor">## |-------------------------|</span></div><div class="line"><span class="preprocessor">## |                       N |</span></div><div class="line"><span class="preprocessor">## |           N / Row Total |</span></div><div class="line"><span class="preprocessor">## |           N / Col Total |</span></div><div class="line"><span class="preprocessor">## |         N / Table Total |</span></div><div class="line"><span class="preprocessor">## |-------------------------|</span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">## Total Observations in Table:  342 </span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##  </span></div><div class="line"><span class="preprocessor">##              | 预测 </span></div><div class="line"><span class="preprocessor">##         实际 |      假币 |      真币 | Row Total | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##         假币 |       156 |        34 |       190 | </span></div><div class="line"><span class="preprocessor">##              |     0.821 |     0.179 |     0.556 | </span></div><div class="line"><span class="preprocessor">##              |     0.817 |     0.225 |           | </span></div><div class="line"><span class="preprocessor">##              |     0.456 |     0.099 |           | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">##         真币 |        35 |       117 |       152 | </span></div><div class="line"><span class="preprocessor">##              |     0.230 |     0.770 |     0.444 | </span></div><div class="line"><span class="preprocessor">##              |     0.183 |     0.775 |           | </span></div><div class="line"><span class="preprocessor">##              |     0.102 |     0.342 |           | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">## Column Total |       191 |       151 |       342 | </span></div><div class="line"><span class="preprocessor">##              |     0.558 |     0.442 |           | </span></div><div class="line"><span class="preprocessor">## -------------|-----------|-----------|-----------|</span></div><div class="line"><span class="preprocessor">## </span></div><div class="line"><span class="preprocessor">##</span></div></pre></td></tr></table></figure>
+
+<p>从上面crosstable可以看出使用KNN算法预测模型的准确率为：99.4%，而Bayes的只有79.8%(还可以进一步优化)，所以，基本上，KNN算法在处理纯numeric数据集时较Bayes结果理想。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/机器学习/">机器学习</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/数据科学/">数据科学</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/11/08/banknote_authentication/" data-title="真假币辨别 | WackyYang`s Blog" data-tsina="2255106785" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/11/02/KNN for German credit card risk/"  title="KNN-K近邻算法判断信用卡风险">
+ <strong>NEXT:</strong><br/> 
+ <span>KNN-K近邻算法判断信用卡风险
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据准备及前处理"><span class="toc-number">1.</span> <span class="toc-text">数据准备及前处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备训练集和测试集"><span class="toc-number">2.</span> <span class="toc-text">准备训练集和测试集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用KNN算法构建模型和评估模型"><span class="toc-number">3.</span> <span class="toc-text">使用KNN算法构建模型和评估模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Bayes算法构建模型和评估模型"><span class="toc-number">4.</span> <span class="toc-text">使用Bayes算法构建模型和评估模型</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/English-Learning/" title="English Learning">English Learning<sup>2</sup></a></li>
+		
+			<li><a href="/categories/数据科学/" title="数据科学">数据科学<sup>5</sup></a></li>
+		
+			<li><a href="/categories/生活/" title="生活">生活<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Fundamental-English-Writing/" title="Fundamental English Writing">Fundamental English Writing<sup>2</sup></a></li>
+		
+			<li><a href="/tags/R-Language/" title="R Language">R Language<sup>1</sup></a></li>
+		
+			<li><a href="/tags/homework/" title="homework">homework<sup>1</sup></a></li>
+		
+			<li><a href="/tags/机器学习/" title="机器学习">机器学习<sup>3</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Going in one more round when you don&#39;t think you can <br/>
+			that&#39;s what makes all difference in your life.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2255106785" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/Wackyyang" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="WackyYoung">WackyYoung</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
